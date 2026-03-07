@@ -4,14 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DarkRevolt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     :root {
-      --bg-start: #0a0f0f;
-      --bg-end: #1a1f2f;
       --text: #ffffff;
+      --line: rgba(255, 255, 255, 0.35);
+      --panel-bg: rgba(0, 0, 0, 0.5);
+      --panel-border: rgba(255, 255, 255, 0.2);
       --menu-hover: rgba(88, 138, 255, 0.24);
       --menu-active: rgba(88, 138, 255, 0.38);
-      --line: rgba(255, 255, 255, 0.35);
     }
 
     * {
@@ -24,15 +29,50 @@
       min-height: 100vh;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: var(--text);
-      background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
       overflow-x: hidden;
       position: relative;
+      background: #0a0f0f;
     }
 
-    body::before {
-      content: "";
+    .parallax-layer {
+      position: fixed;
+      inset: -30px;
+      pointer-events: none;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      transform: translate(0, 0);
+      transition: transform 0.2s linear;
+      will-change: transform;
+    }
+
+    .parallax-back {
+      z-index: -4;
+      background-image: url('./lucid-origin_Minecraft_ruined_nether_portal_broken_obsidian_frames_purple_portal_particles_fl-0.jpg');
+      filter: saturate(0.95) brightness(0.95);
+    }
+
+    .parallax-front {
+      z-index: -3;
+      background-image: url('./lucid-origin_Minecraft_ruined_nether_portal_broken_obsidian_frames_purple_portal_particles_fl-0.jpg');
+      opacity: 0.42;
+      filter: contrast(1.06) brightness(0.75);
+      mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 40%, rgba(0, 0, 0, 0) 88%);
+      -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 40%, rgba(0, 0, 0, 0) 88%);
+    }
+
+    .bg-dim {
       position: fixed;
       inset: 0;
+      z-index: -2;
+      background: rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
       pointer-events: none;
       opacity: 0.08;
       background-image:
@@ -40,7 +80,6 @@
         radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.7) 0.5px, transparent 0.6px),
         radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px);
       background-size: 3px 3px, 4px 4px, 5px 5px;
-      z-index: 0;
     }
 
     @keyframes fadeInUp {
@@ -55,27 +94,25 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .site-header {
-      position: relative;
-      z-index: 2;
       text-align: center;
-      padding-top: 30px;
+      padding-top: 28px;
       animation: fadeInUp 0.55s ease both;
+      position: relative;
     }
 
     .site-title {
-      font-size: clamp(42px, 7vw, 78px);
-      letter-spacing: 6px;
-      font-weight: 800;
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+      margin: 0 auto;
+      width: min(92vw, 760px);
+      height: clamp(130px, 17vw, 190px);
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+      overflow: hidden;
     }
 
     .header-divider {
@@ -83,6 +120,114 @@
       width: min(680px, 85vw);
       height: 1px;
       background: var(--line);
+    }
+
+    .site-title-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 52%;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.65));
+    }
+
+    .title-decor {
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      color: #d8ecff;
+      font-size: 18px;
+      text-shadow: 0 0 10px rgba(120, 187, 255, 0.55);
+    }
+
+    .layout {
+      width: min(1320px, calc(100vw - 40px));
+      margin: 22px auto 32px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 25px;
+      align-items: start;
+    }
+
+    .left-col {
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .profile-btn {
+      width: 56px;
+      height: 56px;
+      border: 1px solid rgba(182, 220, 255, 0.45);
+      border-radius: 14px;
+      background: rgba(8, 14, 28, 0.95);
+      color: #ffffff;
+      font-size: 28px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(157, 211, 255, 0.6);
+    }
+
+    .profile-btn:hover {
+      background: rgba(86, 219, 212, 0.28);
+      transform: translateX(5px);
+      box-shadow: 0 0 14px rgba(86, 219, 212, 0.45);
+    }
+
+    .menu-item {
+      border: 1px solid rgba(182, 220, 255, 0.38);
+      border-radius: 14px;
+      background: rgba(8, 14, 28, 0.9);
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      text-align: left;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.55s ease both;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+    }
+
+    .menu-item:hover {
+      background: rgba(162, 124, 255, 0.28);
+      border-color: rgba(203, 175, 255, 0.85);
+      transform: translateX(5px);
+      box-shadow: 0 0 16px rgba(162, 124, 255, 0.42);
+    }
+
+    .menu-item i {
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .menu-item i {
+      transition: transform 0.3s ease;
+    }
+
+    .menu-item:hover i {
+      transform: rotate(10deg);
+    }
+
+    .menu-item.active {
+      background: rgba(86, 219, 212, 0.3);
+      border-color: rgba(141, 248, 243, 0.88);
+      box-shadow: 0 0 18px rgba(86, 219, 212, 0.46);
+      color: #ecffff;
     }
 
     .menu-toggle {
@@ -101,231 +246,47 @@
       cursor: pointer;
     }
 
-    .side-nav {
-      position: fixed;
-      left: 20px;
-      top: 100px;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      animation: fadeInUp 0.55s ease both;
-    }
-
-    .profile-btn {
-      width: 56px;
-      height: 56px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 14px;
-      background: rgba(15, 20, 31, 0.85);
-      color: #fff;
-      font-size: 28px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      margin-bottom: 10px;
-    }
-
-    .profile-btn:hover {
-      background: var(--menu-hover);
-      transform: translateX(4px);
-    }
-
-    .menu-item {
-      width: 230px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-      font-size: 18px;
-      text-align: left;
-      padding: 12px 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      animation: fadeInUp 0.55s ease both;
-    }
-
-    .menu-item:hover {
-      background: var(--menu-hover);
-      transform: translateX(5px);
-    }
-
-    .menu-item span:first-child {
-      transition: transform 0.3s ease;
-    }
-
-    .menu-item:hover span:first-child {
-      transform: rotate(10deg);
-    }
-
-    .menu-item.active {
-      background: var(--menu-active);
-      border-color: rgba(255, 255, 255, 0.35);
-    }
-
-    .profile-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 60;
-    }
-
-    .profile-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .profile-drawer {
-      width: 320px;
-      height: 100%;
-      background: linear-gradient(180deg, rgba(11, 17, 28, 0.98), rgba(16, 23, 37, 0.98));
-      border-right: 1px solid rgba(255, 255, 255, 0.24);
-      padding: 20px 18px;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      box-shadow: 12px 0 32px rgba(0, 0, 0, 0.45);
-      overflow-y: auto;
-    }
-
-    .profile-overlay.open .profile-drawer {
-      transform: translateX(0);
-    }
-
-    .profile-close-x {
-      margin-left: auto;
-      width: 34px;
-      height: 34px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-      display: block;
-      transition: background-color 0.3s ease;
-    }
-
-    .profile-close-x:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .profile-name {
-      font-size: 34px;
-      font-weight: 800;
-      margin: 8px 0 12px;
-    }
-
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.14);
-      display: block;
-      margin-bottom: 12px;
-    }
-
-    .profile-status {
-      display: inline-block;
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffd447;
-      text-shadow: 0 0 10px rgba(255, 212, 71, 0.4);
-      margin-bottom: 16px;
-    }
-
-    .profile-stats {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .profile-stat {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 10px;
-      padding: 9px 10px;
-    }
-
-    .profile-stat-label {
-      font-size: 12px;
-      opacity: 0.7;
-      margin-bottom: 4px;
-      display: block;
-    }
-
-    .profile-stat-value {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.1;
-    }
-
-    .profile-purchases-title {
-      font-size: 14px;
-      letter-spacing: 0.8px;
-      opacity: 0.84;
-      margin-bottom: 8px;
-    }
-
-    .profile-purchases-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .profile-purchases-list li {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 10px;
-      padding: 9px 10px;
-      font-size: 14px;
-    }
-
-    .profile-close-btn {
+    .right-col {
+      max-width: 980px;
       width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 11px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      font-size: 17px;
-      font-weight: 600;
-      padding: 11px 12px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .profile-close-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .stats-panel {
-      position: fixed;
-      top: 110px;
-      left: 280px;
-      z-index: 6;
+      justify-self: center;
       display: flex;
-      align-items: flex-start;
-      gap: 20px;
+      flex-direction: column;
+      gap: 25px;
       animation: fadeInUp 0.55s ease both;
+    }
+
+    .page-section {
+      display: none;
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.04), 0 8px 20px rgba(0, 0, 0, 0.35);
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
     }
 
     .stat-card {
-      width: 220px;
-      min-height: 130px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: rgba(0, 0, 0, 0.42);
+      background: rgba(0, 0, 0, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 16px;
+      padding: 16px;
+      transition: all 0.3s ease;
       box-shadow: 0 0 18px rgba(120, 170, 255, 0.15), inset 0 0 18px rgba(120, 170, 255, 0.08);
-      transition: transform 0.3s ease;
       animation: fadeInUp 0.55s ease both;
     }
 
@@ -344,6 +305,11 @@
     .stat-icon {
       font-size: 18px;
       line-height: 1;
+    }
+
+    .online-icon {
+      color: #35d86b;
+      text-shadow: 0 0 10px rgba(53, 216, 107, 0.8);
     }
 
     .stat-title {
@@ -365,22 +331,11 @@
       color: #d9e9ff;
     }
 
-    .online-icon {
-      color: #35d86b;
-      text-shadow: 0 0 10px rgba(53, 216, 107, 0.8);
-    }
+    .stats-grid .stat-card:nth-child(1) { animation-delay: 0.10s; }
+    .stats-grid .stat-card:nth-child(2) { animation-delay: 0.20s; }
+    .stats-grid .stat-card:nth-child(3) { animation-delay: 0.30s; }
 
-    .privileges-panel {
-      position: fixed;
-      top: 275px;
-      left: 280px;
-      z-index: 6;
-      width: calc(100% - 310px);
-      max-width: 980px;
-      animation: fadeInUp 0.55s ease both;
-    }
-
-    .privileges-title {
+    .section-title {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -392,14 +347,12 @@
     }
 
     .privileges-grid {
-      display: flex;
-      align-items: flex-start;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 20px;
-      flex-wrap: wrap;
     }
 
     .privilege-item {
-      flex: 1 1 220px;
       min-height: 84px;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -411,9 +364,18 @@
       transition: box-shadow 0.3s ease;
     }
 
+    .privilege-item:hover {
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.1), 0 0 20px rgba(140, 182, 255, 0.5);
+    }
+
+    .privilege-owner { background: rgba(84, 17, 17, 0.72); }
+    .privilege-owner:hover { box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.06), 0 0 18px rgba(255, 206, 86, 0.85); }
+    .privilege-admin { background: rgba(19, 49, 106, 0.72); }
+    .privilege-jr-admin { background: rgba(83, 28, 105, 0.72); }
+    .privilege-donaters { background: rgba(24, 98, 45, 0.72); }
+
     .privilege-icon {
       font-size: 22px;
-      line-height: 1;
       width: 30px;
       text-align: center;
       flex: 0 0 30px;
@@ -424,65 +386,16 @@
       text-align: center;
       font-size: 19px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.95);
     }
 
     .privilege-value {
       font-size: 34px;
       font-weight: 800;
-      line-height: 1;
-      min-width: 34px;
-      text-align: right;
       transition: transform 0.3s ease;
     }
 
     .privilege-item:hover .privilege-value {
       transform: scale(1.18);
-    }
-
-    .privilege-item:hover {
-      box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.1), 0 0 20px rgba(140, 182, 255, 0.5);
-    }
-
-    .privilege-owner {
-      background: rgba(84, 17, 17, 0.72);
-    }
-
-    .privilege-owner:hover {
-      box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.06), 0 0 18px rgba(255, 206, 86, 0.85);
-    }
-
-    .privilege-admin {
-      background: rgba(19, 49, 106, 0.72);
-    }
-
-    .privilege-jr-admin {
-      background: rgba(83, 28, 105, 0.72);
-    }
-
-    .privilege-donaters {
-      background: rgba(24, 98, 45, 0.72);
-    }
-
-    .purchases-panel {
-      position: fixed;
-      top: 435px;
-      left: 280px;
-      z-index: 6;
-      width: calc(100% - 310px);
-      max-width: 980px;
-      animation: fadeInUp 0.55s ease both;
-    }
-
-    .purchases-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 20px;
-      letter-spacing: 1px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
     .purchases-table-wrap {
@@ -515,16 +428,15 @@
       position: sticky;
       top: 0;
       background: rgba(13, 18, 29, 0.96);
-      backdrop-filter: blur(2px);
       z-index: 1;
     }
 
-    .purchases-table tbody tr:nth-child(odd) {
-      background: rgba(255, 255, 255, 0.08);
-    }
+    .purchases-table tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.08); }
+    .purchases-table tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.03); }
 
-    .purchases-table tbody tr:nth-child(even) {
-      background: rgba(255, 255, 255, 0.03);
+    .purchases-table tbody tr {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      animation: fadeIn 0.45s ease both;
     }
 
     .purchases-table tbody tr:hover {
@@ -532,10 +444,11 @@
       transform: scale(1.01);
     }
 
-    .purchases-table tbody tr {
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      animation: fadeIn 0.45s ease both;
-    }
+    .purchases-table tbody tr:nth-child(1) { animation-delay: 0.10s; }
+    .purchases-table tbody tr:nth-child(2) { animation-delay: 0.20s; }
+    .purchases-table tbody tr:nth-child(3) { animation-delay: 0.30s; }
+    .purchases-table tbody tr:nth-child(4) { animation-delay: 0.40s; }
+    .purchases-table tbody tr:nth-child(5) { animation-delay: 0.50s; }
 
     .avatar-img {
       width: 40px;
@@ -545,58 +458,581 @@
       border: 1px solid rgba(255, 255, 255, 0.35);
     }
 
-    .priv-legend {
-      color: #ffd447;
-      font-weight: 700;
-    }
-
-    .priv-premium {
-      color: #6eb2ff;
-      font-weight: 700;
-    }
-
-    .priv-vip {
-      color: #60e27f;
-      font-weight: 700;
-    }
-
-    .priv-vip-plus {
-      color: #cc86ff;
-      font-weight: 700;
-    }
+    .priv-legend { color: #ffd447; font-weight: 700; }
+    .priv-premium { color: #6eb2ff; font-weight: 700; }
+    .priv-vip { color: #60e27f; font-weight: 700; }
+    .priv-vip-plus { color: #cc86ff; font-weight: 700; }
 
     .time-col {
       font-size: 13px;
       opacity: 0.62;
     }
 
-    .stats-panel .stat-card:nth-child(1) { animation-delay: 0.10s; }
-    .stats-panel .stat-card:nth-child(2) { animation-delay: 0.20s; }
-    .stats-panel .stat-card:nth-child(3) { animation-delay: 0.30s; }
+    .profile-page {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
 
-    .purchases-table tbody tr:nth-child(1) { animation-delay: 0.10s; }
-    .purchases-table tbody tr:nth-child(2) { animation-delay: 0.20s; }
-    .purchases-table tbody tr:nth-child(3) { animation-delay: 0.30s; }
-    .purchases-table tbody tr:nth-child(4) { animation-delay: 0.40s; }
-    .purchases-table tbody tr:nth-child(5) { animation-delay: 0.50s; }
+    .profile-page.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-    @media (max-width: 1200px) {
-      .stats-panel {
-        left: 280px;
-        right: 20px;
-        flex-wrap: wrap;
+    .profile-page-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: #0a0a0a;
+    }
+
+    .profile-page-content {
+      position: relative;
+      z-index: 3;
+      width: min(1150px, calc(100vw - 40px));
+      margin: 24px auto 32px;
+      padding: 18px 18px 24px;
+      min-height: calc(100vh - 56px);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    .profile-main {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 28px;
+      align-items: start;
+      margin-top: 6px;
+    }
+
+    .profile-head-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .profile-close-x {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-close-x:hover { background: rgba(255, 255, 255, 0.2); }
+
+    .profile-top {
+      text-align: left;
+      margin-bottom: 12px;
+    }
+
+    .steve-stage {
+      height: 500px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      position: relative;
+      border-radius: 18px;
+      background: #080808;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .steve-character {
+      position: relative;
+      width: 280px;
+      height: 480px;
+    }
+
+    .steve-body {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      height: 420px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .steve-neck-mask {
+      position: absolute;
+      top: 6px;
+      left: 84px;
+      width: 112px;
+      height: 112px;
+      background: #080808;
+      z-index: 2;
+    }
+
+    .steve-head {
+      position: absolute;
+      top: 8px;
+      left: 88px;
+      width: 104px;
+      height: 104px;
+      image-rendering: pixelated;
+      transform-origin: 50% 85%;
+      transition: transform 0.12s ease-out;
+      z-index: 3;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.18);
+    }
+
+    .profile-info {
+      min-width: 0;
+    }
+
+    .profile-name {
+      font-size: clamp(34px, 5vw, 48px);
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+      margin-bottom: 8px;
+    }
+
+    .profile-status {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    }
+
+    .profile-stats-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .profile-stats-grid.first-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-stats-grid.second-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .profile-stat-card {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .profile-page.open .profile-stat-card {
+      animation: fadeInUp 0.45s ease forwards;
+      animation-delay: var(--d, 0s);
+    }
+
+    .profile-stat-label {
+      display: block;
+      font-size: 12px;
+      opacity: 0.72;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .profile-stat-value {
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .profile-privileges {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .profile-page.open .profile-privileges {
+      animation: fadeInUp 0.45s ease forwards;
+      animation-delay: 0.55s;
+    }
+
+    .profile-privileges-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .profile-purchases-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-purchases-list li {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 15px;
+    }
+
+    .profile-footer {
+      margin-top: auto;
+    }
+
+    .profile-close-btn {
+      width: 100%;
+      max-width: 360px;
+      display: block;
+      margin: 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-close-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+    .page-title {
+      font-size: clamp(28px, 4.2vw, 42px);
+      font-weight: 800;
+      margin-bottom: 12px;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.28);
+    }
+
+    .page-text {
+      font-size: 17px;
+      opacity: 0.86;
+      line-height: 1.5;
+    }
+
+    .donate-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .donate-subtitle {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+    }
+
+    .donate-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .donate-card {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .donate-title {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .donate-price {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffd447;
+    }
+
+    .donate-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      opacity: 0.9;
+      min-height: 92px;
+    }
+
+    .buy-btn {
+      margin-top: auto;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      background: rgba(88, 138, 255, 0.25);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .buy-btn:hover {
+      background: rgba(88, 138, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .payment-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 95;
+      padding: 16px;
+    }
+
+    .payment-modal.open {
+      display: flex;
+      animation: fadeIn 0.25s ease both;
+    }
+
+    .payment-box {
+      width: min(920px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .payment-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .payment-title {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .payment-product {
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    .payment-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pay-method {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-size: 14px;
+      text-align: left;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pay-method.active,
+    .pay-method:hover {
+      background: rgba(88, 138, 255, 0.34);
+      border-color: rgba(149, 184, 255, 0.65);
+    }
+
+    .payment-form {
+      display: none;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .payment-form.active {
+      display: block;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 16px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .form-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      background: rgba(98, 181, 114, 0.35);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .payment-note {
+      font-size: 14px;
+      opacity: 0.8;
+      line-height: 1.45;
+    }
+
+    .stub-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .stub-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stub-icon {
+      font-size: 22px;
+      width: 30px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .stub-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .stub-integration {
+      font-size: 13px;
+      opacity: 0.72;
+    }
+
+    .stub-dev {
+      display: inline-block;
+      background: rgba(88, 138, 255, 0.2);
+      border: 1px solid rgba(149, 184, 255, 0.5);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .stub-action {
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 12px;
+      cursor: not-allowed;
+      opacity: 0.85;
+      width: fit-content;
+    }
+
+    .kaspi-qr-wrap {
+      margin-top: 12px;
+      display: none;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .kaspi-qr-wrap.show {
+      display: flex;
+    }
+
+    .kaspi-qr-box {
+      width: 132px;
+      height: 132px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: #fff;
+      padding: 2px;
+    }
+
+    .kaspi-qr-box img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .pay-confirm-btn {
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      background: rgba(98, 181, 114, 0.35);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 10px 12px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .pay-confirm-btn.show {
+      display: inline-block;
+    }
+
+    @media (max-width: 1000px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
 
-      .privileges-panel {
-        left: 280px;
-        right: 20px;
-        width: auto;
+      .privileges-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .purchases-panel {
-        left: 280px;
-        right: 20px;
-        width: auto;
+      .donate-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .payment-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -605,260 +1041,776 @@
         display: block;
       }
 
-      .side-nav {
-        top: 74px;
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .left-col {
+        position: fixed;
         left: 0;
-        height: calc(100vh - 74px);
-        padding: 16px;
-        background: rgba(12, 16, 24, 0.96);
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        top: 74px;
+        z-index: 20;
         transform: translateX(-110%);
         transition: transform 0.3s ease;
       }
 
-      .side-nav.open {
+      .left-col.open {
         transform: translateX(0);
       }
 
-      .stats-panel {
-        position: relative;
-        top: 24px;
-        left: 0;
-        right: auto;
-        padding: 0 16px 24px;
-        flex-direction: column;
+      .side-nav {
+        width: 250px;
+        min-height: calc(100vh - 74px);
+        padding: 16px;
+        background: rgba(12, 16, 24, 0.96);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        position: static;
       }
 
-      .stat-card {
-        width: min(100%, 420px);
-      }
-
-      .privileges-panel {
-        position: relative;
-        top: 30px;
-        left: 0;
-        right: auto;
-        width: 100%;
-        padding: 0 16px 36px;
+      .right-col {
+        max-width: 100%;
       }
 
       .privileges-grid {
-        flex-direction: column;
+        grid-template-columns: 1fr;
       }
 
-      .privilege-item {
-        width: min(100%, 420px);
+      .profile-page-content {
+        width: calc(100vw - 20px);
+        margin: 10px auto;
+        min-height: calc(100vh - 20px);
       }
 
-      .purchases-panel {
-        position: relative;
-        top: 34px;
-        left: 0;
-        right: auto;
+      .profile-main {
+        grid-template-columns: 1fr;
+      }
+
+      .steve-stage {
+        max-width: 420px;
         width: 100%;
-        padding: 0 16px 28px;
+        margin: 0 auto;
+        height: 460px;
       }
 
-      .profile-drawer {
-        width: min(320px, 90vw);
+      .profile-stats-grid.first-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .profile-stats-grid.second-row {
+        grid-template-columns: 1fr;
+      }
+
+      .payment-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
+<div class="parallax-layer parallax-back" id="parallaxBack"></div>
+<div class="parallax-layer parallax-front" id="parallaxFront"></div>
+<div class="bg-dim"></div>
+<div class="noise"></div>
+
 <header class="site-header">
-  <h1 class="site-title">DARKREVOLT</h1>
-  <div class="header-divider"></div>
+  <h1 class="site-title">
+    <img class="site-title-image" src="./gemini-2.5-flash-image_оставь_только_надпись_и_трещины_не_должы_бы-0-removebg-preview.png" alt="DarkRevolt">
+  </h1>
 </header>
 
 <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">☰</button>
 
-<nav class="side-nav" id="sideNav" aria-label="Навигация">
-  <button class="profile-btn" id="profileBtn" aria-label="Профиль">👤</button>
+<div class="layout">
+  <aside class="left-col" id="leftCol">
+    <nav class="side-nav" aria-label="Навигация">
+      <button class="profile-btn" id="profileBtn" aria-label="Профиль">👤</button>
 
-  <button class="menu-item active"><span>🏠</span><span>Главная</span></button>
-  <button class="menu-item"><span>🎮</span><span>Режимы игры</span></button>
-  <button class="menu-item"><span>💎</span><span>Донат</span></button>
-  <button class="menu-item"><span>📰</span><span>Новости</span></button>
-  <button class="menu-item"><span>🏆</span><span>Топ игроков</span></button>
-  <button class="menu-item"><span>📜</span><span>Правила</span></button>
-</nav>
-
-<section class="stats-panel" aria-label="Статистика сервера">
-  <article class="stat-card">
-    <div class="stat-head">
-      <span class="stat-icon online-icon">●</span>
-      <span class="stat-title">ОНЛАЙН</span>
-    </div>
-    <div class="stat-value">42/200</div>
-  </article>
-
-  <article class="stat-card">
-    <div class="stat-head">
-      <span class="stat-icon">👥</span>
-      <span class="stat-title">ВСЕГО ИГРОКОВ</span>
-    </div>
-    <div class="stat-value">1250</div>
-  </article>
-
-  <article class="stat-card">
-    <div class="stat-head">
-      <span class="stat-icon">💎</span>
-      <span class="stat-title">ДОНАТЕРОВ</span>
-    </div>
-    <div class="stat-value">87</div>
-  </article>
-</section>
-
-<section class="privileges-panel" aria-label="Привилегии сервера">
-  <h2 class="privileges-title"><span>👑</span><span>ПРИВИЛЕГИИ СЕРВЕРА</span></h2>
-  <div class="privileges-grid">
-    <article class="privilege-item privilege-owner">
-      <span class="privilege-icon">👑</span>
-      <span class="privilege-name">Владелец</span>
-      <span class="privilege-value">2</span>
-    </article>
-    <article class="privilege-item privilege-admin">
-      <span class="privilege-icon">🛡️</span>
-      <span class="privilege-name">Админ</span>
-      <span class="privilege-value">5</span>
-    </article>
-    <article class="privilege-item privilege-jr-admin">
-      <span class="privilege-icon">⭐</span>
-      <span class="privilege-name">Мл.Админ</span>
-      <span class="privilege-value">12</span>
-    </article>
-    <article class="privilege-item privilege-donaters">
-      <span class="privilege-icon">💎</span>
-      <span class="privilege-name">Донатеры</span>
-      <span class="privilege-value">68</span>
-    </article>
-  </div>
-</section>
-
-<section class="purchases-panel" aria-label="Последние покупки">
-  <h2 class="purchases-title"><span>🛒</span><span>ПОСЛЕДНИЕ ПОКУПКИ</span></h2>
-  <div class="purchases-table-wrap">
-    <table class="purchases-table">
-      <thead>
-      <tr>
-        <th>Аватар</th>
-        <th>Ник</th>
-        <th>Привилегия</th>
-        <th>Время</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td><img class="avatar-img" src="https://minotar.net/avatar/NightCreeper/32.png" alt="NightCreeper"></td>
-        <td>NightCreeper</td>
-        <td><span class="priv-legend">Legend</span></td>
-        <td class="time-col">только что</td>
-      </tr>
-      <tr>
-        <td><img class="avatar-img" src="https://minotar.net/avatar/AlphaKz/32.png" alt="AlphaKz"></td>
-        <td>AlphaKz</td>
-        <td><span class="priv-premium">Premium</span></td>
-        <td class="time-col">только что</td>
-      </tr>
-      <tr>
-        <td><img class="avatar-img" src="https://minotar.net/avatar/StoneRider/32.png" alt="StoneRider"></td>
-        <td>StoneRider</td>
-        <td><span class="priv-vip">VIP</span></td>
-        <td class="time-col">только что</td>
-      </tr>
-      <tr>
-        <td><img class="avatar-img" src="https://minotar.net/avatar/NeoBuilder/32.png" alt="NeoBuilder"></td>
-        <td>NeoBuilder</td>
-        <td><span class="priv-vip-plus">VIP+</span></td>
-        <td class="time-col">только что</td>
-      </tr>
-      <tr>
-        <td><img class="avatar-img" src="https://minotar.net/avatar/FoxBlade/32.png" alt="FoxBlade"></td>
-        <td>FoxBlade</td>
-        <td><span class="priv-legend">Кейс Легенд</span></td>
-        <td class="time-col">только что</td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<div class="profile-overlay" id="profileOverlay" aria-hidden="true">
-  <aside class="profile-drawer" id="profileDrawer" aria-label="Профиль игрока">
-    <button class="profile-close-x" id="profileCloseX" aria-label="Закрыть панель">×</button>
-    <h2 class="profile-name">Zhanassyl</h2>
-    <img class="profile-avatar" src="https://minotar.net/avatar/Zhanassyl/100.png" alt="Аватар Zhanassyl">
-    <div class="profile-status">Legend-донатер</div>
-
-    <div class="profile-stats">
-      <div class="profile-stat"><span class="profile-stat-label">Убийств</span><span class="profile-stat-value">1,247</span></div>
-      <div class="profile-stat"><span class="profile-stat-label">Смертей</span><span class="profile-stat-value">843</span></div>
-      <div class="profile-stat"><span class="profile-stat-label">KDR</span><span class="profile-stat-value">1.48</span></div>
-      <div class="profile-stat"><span class="profile-stat-label">Часов</span><span class="profile-stat-value">327</span></div>
-      <div class="profile-stat"><span class="profile-stat-label">Потрачено</span><span class="profile-stat-value">23,500₸</span></div>
-      <div class="profile-stat"><span class="profile-stat-label">Побед</span><span class="profile-stat-value">89</span></div>
-    </div>
-
-    <h3 class="profile-purchases-title">Купленные привилегии</h3>
-    <ul class="profile-purchases-list">
-      <li>VIP (12.01.2026)</li>
-      <li>Premium (23.02.2026)</li>
-      <li>Legend (01.03.2026)</li>
-    </ul>
-
-    <button class="profile-close-btn" id="profileCloseBtn">Закрыть</button>
+      <button class="menu-item active" data-page="home"><i class="fa-solid fa-house"></i><span>Главная</span></button>
+      <button class="menu-item" data-page="gamemodes"><i class="fa-solid fa-gamepad"></i><span>Режимы игры</span></button>
+      <button class="menu-item" data-page="donate"><i class="fa-solid fa-gem"></i><span>Донат</span></button>
+      <button class="menu-item" data-page="news"><i class="fa-solid fa-newspaper"></i><span>Новости</span></button>
+      <button class="menu-item" data-page="top"><i class="fa-solid fa-trophy"></i><span>Топ игроков</span></button>
+      <button class="menu-item" data-page="rules"><i class="fa-solid fa-scroll"></i><span>Правила</span></button>
+    </nav>
   </aside>
+
+  <main class="right-col">
+    <section class="page-section active" data-page-section="home">
+      <section class="panel" aria-label="Статистика сервера">
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-head">
+              <span class="stat-icon online-icon">●</span>
+              <span class="stat-title">ОНЛАЙН</span>
+            </div>
+            <div class="stat-value">42/200</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-head">
+              <span class="stat-icon">👥</span>
+              <span class="stat-title">ВСЕГО ИГРОКОВ</span>
+            </div>
+            <div class="stat-value">1250</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-head">
+              <span class="stat-icon">💎</span>
+              <span class="stat-title">ДОНАТЕРОВ</span>
+            </div>
+            <div class="stat-value">87</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Привилегии сервера">
+        <h2 class="section-title"><span>👑</span><span>ПРИВИЛЕГИИ СЕРВЕРА</span></h2>
+        <div class="privileges-grid">
+          <article class="privilege-item privilege-owner">
+            <span class="privilege-icon">👑</span>
+            <span class="privilege-name">Владелец</span>
+            <span class="privilege-value">2</span>
+          </article>
+          <article class="privilege-item privilege-admin">
+            <span class="privilege-icon">🛡️</span>
+            <span class="privilege-name">Админ</span>
+            <span class="privilege-value">5</span>
+          </article>
+          <article class="privilege-item privilege-jr-admin">
+            <span class="privilege-icon">⭐</span>
+            <span class="privilege-name">Мл.Админ</span>
+            <span class="privilege-value">12</span>
+          </article>
+          <article class="privilege-item privilege-donaters">
+            <span class="privilege-icon">💎</span>
+            <span class="privilege-name">Донатеры</span>
+            <span class="privilege-value">68</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Последние покупки">
+        <h2 class="section-title"><span>🛒</span><span>ПОСЛЕДНИЕ ПОКУПКИ</span></h2>
+        <div class="purchases-table-wrap">
+          <table class="purchases-table">
+            <thead>
+            <tr>
+              <th>Аватар</th>
+              <th>Ник</th>
+              <th>Привилегия</th>
+              <th>Время</th>
+            </tr>
+            </thead>
+            <tbody id="recentPurchasesBody">
+            <tr>
+              <td><img class="avatar-img" src="https://minotar.net/avatar/NightCreeper/32.png" alt="NightCreeper"></td>
+              <td>NightCreeper</td>
+              <td><span class="priv-legend">Legend</span></td>
+              <td class="time-col">только что</td>
+            </tr>
+            <tr>
+              <td><img class="avatar-img" src="https://minotar.net/avatar/AlphaKz/32.png" alt="AlphaKz"></td>
+              <td>AlphaKz</td>
+              <td><span class="priv-premium">Premium</span></td>
+              <td class="time-col">только что</td>
+            </tr>
+            <tr>
+              <td><img class="avatar-img" src="https://minotar.net/avatar/StoneRider/32.png" alt="StoneRider"></td>
+              <td>StoneRider</td>
+              <td><span class="priv-vip">VIP</span></td>
+              <td class="time-col">только что</td>
+            </tr>
+            <tr>
+              <td><img class="avatar-img" src="https://minotar.net/avatar/NeoBuilder/32.png" alt="NeoBuilder"></td>
+              <td>NeoBuilder</td>
+              <td><span class="priv-vip-plus">VIP+</span></td>
+              <td class="time-col">только что</td>
+            </tr>
+            <tr>
+              <td><img class="avatar-img" src="https://minotar.net/avatar/FoxBlade/32.png" alt="FoxBlade"></td>
+              <td>FoxBlade</td>
+              <td><span class="priv-legend">Кейс Легенд</span></td>
+              <td class="time-col">только что</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="page-section" data-page-section="gamemodes">
+      <section class="panel">
+        <h2 class="page-title">Режимы игры</h2>
+        <p class="page-text">PvP арены, выживание, кланы, ивенты и PvE-данжи. Раздел загружен как отдельная страница внутри одного HTML.</p>
+      </section>
+    </section>
+
+    <section class="page-section" data-page-section="donate">
+      <section class="panel">
+        <h2 class="page-title">Донат</h2>
+
+        <section class="donate-section">
+          <h3 class="donate-subtitle">Покупка привилегий</h3>
+          <div class="donate-grid">
+            <article class="donate-card">
+              <div class="donate-title">VIP</div>
+              <div class="donate-price">4700₸</div>
+              <ul class="donate-list">
+                <li>+ 2 дома и цветной ник</li>
+                <li>+ /kit vip раз в 24ч</li>
+                <li>+ Префикс в чате</li>
+              </ul>
+              <button class="buy-btn" data-product="VIP" data-price="4700">Купить</button>
+            </article>
+            <article class="donate-card">
+              <div class="donate-title">Premium</div>
+              <div class="donate-price">11750₸</div>
+              <ul class="donate-list">
+                <li>+ Все возможности VIP</li>
+                <li>+ /fly в лобби</li>
+                <li>+ Уникальный /kit premium</li>
+              </ul>
+              <button class="buy-btn" data-product="Premium" data-price="11750">Купить</button>
+            </article>
+            <article class="donate-card">
+              <div class="donate-title">Legend</div>
+              <div class="donate-price">23500₸</div>
+              <ul class="donate-list">
+                <li>+ Все возможности Premium</li>
+                <li>+ Эксклюзивные частицы</li>
+                <li>+ /kit legend и приоритет входа</li>
+              </ul>
+              <button class="buy-btn" data-product="Legend" data-price="23500">Купить</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="donate-section">
+          <h3 class="donate-subtitle">Покупка кейсов</h3>
+          <div class="donate-grid">
+            <article class="donate-card">
+              <div class="donate-title">Обычный кейс</div>
+              <div class="donate-price">500₸</div>
+              <ul class="donate-list">
+                <li>Шансы: 70% обычный</li>
+                <li>25% редкий</li>
+                <li>5% легендарный</li>
+              </ul>
+              <button class="buy-btn" data-product="Обычный кейс" data-price="500">Купить кейс</button>
+            </article>
+            <article class="donate-card">
+              <div class="donate-title">Редкий кейс</div>
+              <div class="donate-price">1500₸</div>
+              <ul class="donate-list">
+                <li>Шансы: 50% обычный</li>
+                <li>35% редкий</li>
+                <li>15% легендарный</li>
+              </ul>
+              <button class="buy-btn" data-product="Редкий кейс" data-price="1500">Купить кейс</button>
+            </article>
+            <article class="donate-card">
+              <div class="donate-title">Легендарный кейс</div>
+              <div class="donate-price">5000₸</div>
+              <ul class="donate-list">
+                <li>Шансы: 20% обычный</li>
+                <li>35% редкий</li>
+                <li>45% легендарный</li>
+              </ul>
+              <button class="buy-btn" data-product="Легендарный кейс" data-price="5000">Купить кейс</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="donate-section">
+          <h3 class="donate-subtitle">Покупка игровой валюты</h3>
+          <div class="donate-grid">
+            <article class="donate-card">
+              <div class="donate-title">1000 монет</div>
+              <div class="donate-price">100₸</div>
+              <ul class="donate-list">
+                <li>Быстрое пополнение баланса</li>
+                <li>Подходит для стартовых покупок</li>
+              </ul>
+              <button class="buy-btn" data-product="1000 монет" data-price="100">Купить</button>
+            </article>
+            <article class="donate-card">
+              <div class="donate-title">5000 монет</div>
+              <div class="donate-price">450₸</div>
+              <ul class="donate-list">
+                <li>Выгодный пакет для активной игры</li>
+                <li>Скидка относительно базового курса</li>
+              </ul>
+              <button class="buy-btn" data-product="5000 монет" data-price="450">Купить</button>
+            </article>
+            <article class="donate-card">
+              <div class="donate-title">10000 монет</div>
+              <div class="donate-price">800₸</div>
+              <ul class="donate-list">
+                <li>Максимальная выгода</li>
+                <li>Для крупных игровых покупок</li>
+              </ul>
+              <button class="buy-btn" data-product="10000 монет" data-price="800">Купить</button>
+            </article>
+          </div>
+        </section>
+      </section>
+    </section>
+
+    <section class="page-section" data-page-section="news">
+      <section class="panel">
+        <h2 class="page-title">Новости</h2>
+        <p class="page-text">Обновления DarkRevolt, изменения баланса, расписание вайпов и результаты ивентов.</p>
+      </section>
+    </section>
+
+    <section class="page-section" data-page-section="top">
+      <section class="panel">
+        <h2 class="page-title">Топ игроков</h2>
+        <p class="page-text">Рейтинг игроков по убийствам, победам и активности. Ежемесячный сезон с наградами.</p>
+      </section>
+    </section>
+
+    <section class="page-section" data-page-section="rules">
+      <section class="panel">
+        <h2 class="page-title">Правила</h2>
+        <p class="page-text">Соблюдайте правила чата и игрового процесса. Запрещены читы, оскорбления и злоупотребления багами.</p>
+      </section>
+    </section>
+  </main>
 </div>
 
+<div class="profile-page" id="profilePage" aria-hidden="true">
+  <div class="profile-page-bg"></div>
+  <div class="profile-page-content">
+    <div class="profile-head-row">
+      <button class="profile-close-x" id="profileCloseX" aria-label="Закрыть профиль">×</button>
+    </div>
+
+    <section class="profile-main">
+      <div class="steve-stage">
+        <div class="steve-character">
+          <img class="steve-body" src="https://minotar.net/body/Steve/420.png" alt="Steve Full Body">
+          <div class="steve-neck-mask"></div>
+          <img class="steve-head" id="steveHead" src="https://minotar.net/avatar/Steve/200.png" alt="Steve Head">
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <section class="profile-top">
+          <h2 class="profile-name">Zhanassyl</h2>
+          <div class="profile-status">Legend-донатер</div>
+        </section>
+
+        <section class="profile-stats-grid first-row">
+          <article class="profile-stat-card" style="--d: 0.1s;"><span class="profile-stat-label">Убийств</span><span class="profile-stat-value">1,247</span></article>
+          <article class="profile-stat-card" style="--d: 0.2s;"><span class="profile-stat-label">Смертей</span><span class="profile-stat-value">843</span></article>
+          <article class="profile-stat-card" style="--d: 0.3s;"><span class="profile-stat-label">KDR</span><span class="profile-stat-value">1.48</span></article>
+          <article class="profile-stat-card" style="--d: 0.4s;"><span class="profile-stat-label">Часов</span><span class="profile-stat-value">327</span></article>
+        </section>
+
+        <section class="profile-stats-grid second-row">
+          <article class="profile-stat-card" style="--d: 0.5s;"><span class="profile-stat-label">Побед</span><span class="profile-stat-value">89</span></article>
+          <article class="profile-stat-card" style="--d: 0.6s;"><span class="profile-stat-label">Место в топе</span><span class="profile-stat-value">#42</span></article>
+          <article class="profile-stat-card" style="--d: 0.7s;"><span class="profile-stat-label">Потрачено</span><span class="profile-stat-value">23,500₸</span></article>
+        </section>
+
+        <section class="profile-privileges">
+          <h3 class="profile-privileges-title">Купленные привилегии</h3>
+          <ul class="profile-purchases-list">
+            <li>VIP (12.01.2026)</li>
+            <li>Premium (23.02.2026)</li>
+            <li>Legend (01.03.2026)</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <div class="profile-footer">
+      <button class="profile-close-btn" id="profileCloseBtn">На главную</button>
+    </div>
+  </div>
+</div>
+
+<div class="payment-modal" id="paymentModal" aria-hidden="true">
+  <div class="payment-box">
+    <div class="payment-top">
+      <div>
+        <h3 class="payment-title">Оплата</h3>
+        <div class="payment-product" id="paymentProduct">Товар: -</div>
+      </div>
+      <button class="payment-close" id="paymentClose" aria-label="Закрыть оплату">×</button>
+    </div>
+
+    <div class="payment-grid">
+      <button class="pay-method active" data-method="kaspi">💳 Kaspi (QR/номер)</button>
+      <button class="pay-method" data-method="rf-cards">🇷🇺 Карты РФ (Visa/Mastercard/Мир)</button>
+      <button class="pay-method" data-method="yoomoney">💰 ЮMoney</button>
+      <button class="pay-method" data-method="cryptobot">₿ Cryptobot</button>
+      <button class="pay-method" data-method="tg-stars">⭐ Telegram Stars</button>
+      <button class="pay-method" data-method="foreign-cards">🌍 Зарубежные карты</button>
+      <button class="pay-method" data-method="kaspi-kz">🏦 Каспи (Казахстан)</button>
+      <button class="pay-method" data-method="mobile-balance">📱 Beeline, T2, Altel, Aktiv</button>
+    </div>
+
+    <section class="payment-form active" data-form="kaspi">
+      <label class="form-label" for="kaspiPhone">Введите ваш номер телефона (Kaspi)</label>
+      <input class="form-input" id="kaspiPhone" type="tel" placeholder="+7 7xx xxx xx xx">
+      <button class="form-btn" id="kaspiQrBtn">Оплатить</button>
+      <div class="kaspi-qr-wrap" id="kaspiQrWrap">
+        <div class="kaspi-qr-box" id="kaspiQrBox"></div>
+        <div>
+          <div class="payment-note" id="kaspiQrText"></div>
+          <button class="pay-confirm-btn" id="kaspiPaidBtn">Я оплатил</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="payment-form" data-form="rf-cards">
+      <div class="stub-box">
+        <div class="stub-head">
+          <span class="stub-icon">🇷🇺</span>
+          <div>
+            <div class="stub-title">Карты РФ</div>
+            <div class="stub-integration">Интеграция: ЮKassa / Т-Касса</div>
+          </div>
+        </div>
+        <p class="payment-note">Оплата картами Visa/Mastercard/Мир подключается.</p>
+        <div class="stub-dev">В разработке, но скоро заработает</div>
+      </div>
+    </section>
+    <section class="payment-form" data-form="yoomoney">
+      <div class="stub-box">
+        <div class="stub-head">
+          <span class="stub-icon">💰</span>
+          <div>
+            <div class="stub-title">ЮMoney</div>
+            <div class="stub-integration">Переход на оплату через ЮMoney</div>
+          </div>
+        </div>
+        <button class="stub-action" type="button">Перейти к ЮMoney</button>
+        <div class="stub-dev">В разработке, но скоро заработает</div>
+      </div>
+    </section>
+    <section class="payment-form" data-form="cryptobot">
+      <div class="stub-box">
+        <div class="stub-head">
+          <span class="stub-icon">₿</span>
+          <div>
+            <div class="stub-title">Cryptobot</div>
+            <div class="stub-integration">Интеграция: Cryptobot API</div>
+          </div>
+        </div>
+        <p class="payment-note">Крипто-инвойсы появятся после подключения API.</p>
+        <div class="stub-dev">В разработке, но скоро заработает</div>
+      </div>
+    </section>
+    <section class="payment-form" data-form="tg-stars">
+      <div class="stub-box">
+        <div class="stub-head">
+          <span class="stub-icon">⭐</span>
+          <div>
+            <div class="stub-title">Telegram Stars</div>
+            <div class="stub-integration">Оплата звездами Telegram</div>
+          </div>
+        </div>
+        <p class="payment-note">Платежи Stars будут доступны после релиза бота.</p>
+        <div class="stub-dev">В разработке, но скоро заработает</div>
+      </div>
+    </section>
+    <section class="payment-form" data-form="foreign-cards">
+      <div class="stub-box">
+        <div class="stub-head">
+          <span class="stub-icon">🌍</span>
+          <div>
+            <div class="stub-title">Зарубежные карты</div>
+            <div class="stub-integration">Международный эквайринг</div>
+          </div>
+        </div>
+        <p class="payment-note">Оплата зарубежными картами готовится к запуску.</p>
+        <div class="stub-dev">В разработке, но скоро заработает</div>
+      </div>
+    </section>
+    <section class="payment-form" data-form="kaspi-kz">
+      <div class="stub-box">
+        <div class="stub-head">
+          <span class="stub-icon">🏦</span>
+          <div>
+            <div class="stub-title">Каспи (Казахстан)</div>
+            <div class="stub-integration">Дополнительный канал Kaspi</div>
+          </div>
+        </div>
+        <p class="payment-note">Альтернативная схема Kaspi добавляется отдельно.</p>
+        <div class="stub-dev">В разработке, но скоро заработает</div>
+      </div>
+    </section>
+    <section class="payment-form" data-form="mobile-balance">
+      <div class="stub-box">
+        <div class="stub-head">
+          <span class="stub-icon">📱</span>
+          <div>
+            <div class="stub-title">Beeline / T2 / Altel / Aktiv</div>
+            <div class="stub-integration">Оплата с баланса телефона (SMS/короткий номер)</div>
+          </div>
+        </div>
+        <p class="payment-note">Оплата с баланса телефона скоро будет доступна.</p>
+        <div class="stub-dev">В разработке, но скоро заработает</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
   const menuItems = document.querySelectorAll('.menu-item');
+  const pageSections = document.querySelectorAll('[data-page-section]');
   const profileBtn = document.getElementById('profileBtn');
-  const profileOverlay = document.getElementById('profileOverlay');
-  const profileDrawer = document.getElementById('profileDrawer');
+  const profilePage = document.getElementById('profilePage');
   const profileCloseX = document.getElementById('profileCloseX');
   const profileCloseBtn = document.getElementById('profileCloseBtn');
+  const buyButtons = document.querySelectorAll('.buy-btn');
+  const paymentModal = document.getElementById('paymentModal');
+  const paymentClose = document.getElementById('paymentClose');
+  const paymentProduct = document.getElementById('paymentProduct');
+  const paymentMethods = document.querySelectorAll('.pay-method');
+  const paymentForms = document.querySelectorAll('.payment-form');
+  const kaspiPhone = document.getElementById('kaspiPhone');
+  const kaspiQrBtn = document.getElementById('kaspiQrBtn');
+  const kaspiQrWrap = document.getElementById('kaspiQrWrap');
+  const kaspiQrBox = document.getElementById('kaspiQrBox');
+  const kaspiQrText = document.getElementById('kaspiQrText');
+  const kaspiPaidBtn = document.getElementById('kaspiPaidBtn');
+  const recentPurchasesBody = document.getElementById('recentPurchasesBody');
+  const steveHead = document.getElementById('steveHead');
   const menuToggle = document.getElementById('menuToggle');
-  const sideNav = document.getElementById('sideNav');
+  const leftCol = document.getElementById('leftCol');
+  const parallaxBack = document.getElementById('parallaxBack');
+  const parallaxFront = document.getElementById('parallaxFront');
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let backX = 0;
+  let backY = 0;
+  let frontX = 0;
+  let frontY = 0;
+  let selectedProduct = null;
+  let kaspiPaymentUrl = '';
+  const APIPAY_URL = 'https://bpapi.bazarbay.site/api/invoices';
+  const APIPAY_API_KEY = window.APIPAY_API_KEY || '';
+
+  const setActiveMenu = (page) => {
+    menuItems.forEach((item) => {
+      item.classList.toggle('active', item.dataset.page === page);
+    });
+  };
+
+  const showPage = (page) => {
+    pageSections.forEach((section) => {
+      const isTarget = section.dataset.pageSection === page;
+      section.style.display = isTarget ? 'block' : 'none';
+      section.classList.toggle('active', isTarget);
+    });
+    setActiveMenu(page);
+  };
+
+  const closeProfile = () => {
+    profilePage.classList.remove('open');
+    profilePage.setAttribute('aria-hidden', 'true');
+    if (steveHead) steveHead.style.transform = 'rotate(0deg)';
+    showPage('home');
+  };
 
   menuItems.forEach((item) => {
     item.addEventListener('click', () => {
-      menuItems.forEach((el) => el.classList.remove('active'));
-      item.classList.add('active');
+      showPage(item.dataset.page);
       if (window.innerWidth <= 768) {
-        sideNav.classList.remove('open');
+        leftCol.classList.remove('open');
       }
     });
   });
 
-  const closeProfile = () => {
-    profileOverlay.classList.remove('open');
-    profileOverlay.setAttribute('aria-hidden', 'true');
-  };
-
   profileBtn.addEventListener('click', () => {
-    profileOverlay.classList.add('open');
-    profileOverlay.setAttribute('aria-hidden', 'false');
+    profilePage.classList.add('open');
+    profilePage.setAttribute('aria-hidden', 'false');
   });
 
   profileCloseX.addEventListener('click', closeProfile);
   profileCloseBtn.addEventListener('click', closeProfile);
 
-  menuToggle.addEventListener('click', () => {
-    sideNav.classList.toggle('open');
+  const openPaymentModal = (product, price) => {
+    selectedProduct = { product, price };
+    paymentProduct.textContent = `Товар: ${product} — ${price}₸`;
+    paymentModal.classList.add('open');
+    paymentModal.setAttribute('aria-hidden', 'false');
+  };
+
+  const closePaymentModal = () => {
+    paymentModal.classList.remove('open');
+    paymentModal.setAttribute('aria-hidden', 'true');
+    kaspiQrWrap.classList.remove('show');
+    kaspiQrBox.innerHTML = '';
+    kaspiQrText.textContent = '';
+    kaspiPaidBtn.classList.remove('show');
+    kaspiPaymentUrl = '';
+  };
+
+  buyButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      openPaymentModal(btn.dataset.product, btn.dataset.price);
+    });
   });
 
-  document.addEventListener('click', (event) => {
-    if (profileOverlay.classList.contains('open') && event.target === profileOverlay) {
-      closeProfile();
+  paymentClose.addEventListener('click', closePaymentModal);
+  paymentModal.addEventListener('click', (event) => {
+    if (event.target === paymentModal) {
+      closePaymentModal();
     }
+  });
+
+  paymentMethods.forEach((methodBtn) => {
+    methodBtn.addEventListener('click', () => {
+      const method = methodBtn.dataset.method;
+      paymentMethods.forEach((item) => item.classList.toggle('active', item === methodBtn));
+      paymentForms.forEach((form) => {
+        form.classList.toggle('active', form.dataset.form === method);
+      });
+    });
+  });
+
+  const generateKaspiQr = async () => {
+    const phone = kaspiPhone.value.trim();
+    if (!phone) {
+      kaspiQrText.textContent = 'Введите номер телефона.';
+      kaspiQrWrap.classList.add('show');
+      return;
+    }
+
+    if (!selectedProduct) {
+      kaspiQrText.textContent = 'Сначала выберите товар.';
+      kaspiQrWrap.classList.add('show');
+      return;
+    }
+
+    kaspiQrText.textContent = 'Генерация QR...';
+    kaspiQrWrap.classList.add('show');
+    kaspiQrBox.innerHTML = '';
+    kaspiPaidBtn.classList.remove('show');
+
+    try {
+      const response = await fetch(APIPAY_URL, {
+        method: 'POST',
+        headers: {
+          'X-API-Key': APIPAY_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: Number(selectedProduct.price),
+          phone_number: phone,
+          description: `DarkRevolt: ${selectedProduct.product}`
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      const paymentUrl = data.payment_url;
+
+      if (!paymentUrl) {
+        throw new Error('В ответе отсутствует payment_url');
+      }
+
+      kaspiPaymentUrl = paymentUrl;
+      new QRCode(kaspiQrBox, {
+        text: paymentUrl,
+        width: 128,
+        height: 128,
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      kaspiQrText.textContent = 'QR сгенерирован из payment_url ApiPay.';
+      kaspiPaidBtn.classList.add('show');
+    } catch (error) {
+      kaspiQrText.textContent = 'Не удалось получить payment_url из ApiPay. Проверьте X-API-Key и доступ к API.';
+    }
+  };
+
+  const addPurchaseRow = (nick, privilege) => {
+    if (!recentPurchasesBody) return;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><img class="avatar-img" src="https://minotar.net/avatar/${encodeURIComponent(nick)}/32.png" alt="${nick}"></td>
+      <td>${nick}</td>
+      <td><span class="priv-legend">${privilege}</span></td>
+      <td class="time-col">только что</td>
+    `;
+    recentPurchasesBody.prepend(row);
+  };
+
+  kaspiPaidBtn.addEventListener('click', () => {
+    if (!selectedProduct || !kaspiPaymentUrl) return;
+    addPurchaseRow('Zhanassyl', selectedProduct.product);
+    closePaymentModal();
+    showPage('home');
+  });
+
+  kaspiQrBtn.addEventListener('click', generateKaspiQr);
+
+  menuToggle.addEventListener('click', () => {
+    leftCol.classList.toggle('open');
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && profileOverlay.classList.contains('open')) {
+    if (event.key === 'Escape' && profilePage.classList.contains('open')) {
       closeProfile();
+      return;
+    }
+    if (event.key === 'Escape' && paymentModal.classList.contains('open')) {
+      closePaymentModal();
     }
   });
+
+  window.addEventListener('mousemove', (event) => {
+    const { innerWidth, innerHeight } = window;
+    mouseX = event.clientX - (innerWidth / 2);
+    mouseY = event.clientY - (innerHeight / 2);
+
+    if (steveHead && profilePage.classList.contains('open')) {
+      const centerX = innerWidth / 2;
+      const centerY = innerHeight / 2;
+      const dx = (event.clientX - centerX) / centerX;
+      const dy = (event.clientY - centerY) / centerY;
+      const angle = Math.max(-30, Math.min(30, (dx * 28) + (dy * 8)));
+      steveHead.style.transform = `rotate(${angle}deg)`;
+    }
+  });
+
+  window.addEventListener('mouseleave', () => {
+    if (steveHead) steveHead.style.transform = 'rotate(0deg)';
+  });
+
+  window.addEventListener('blur', () => {
+    if (steveHead) steveHead.style.transform = 'rotate(0deg)';
+  });
+
+  const animateParallax = () => {
+    const targetBackX = mouseX * 0.01;
+    const targetBackY = mouseY * 0.01;
+    const targetFrontX = mouseX * 0.05;
+    const targetFrontY = mouseY * 0.05;
+
+    backX += (targetBackX - backX) * 0.08;
+    backY += (targetBackY - backY) * 0.08;
+    frontX += (targetFrontX - frontX) * 0.08;
+    frontY += (targetFrontY - frontY) * 0.08;
+
+    parallaxBack.style.transform = `translate(${backX}px, ${backY}px)`;
+    parallaxFront.style.transform = `translate(${frontX}px, ${frontY}px)`;
+    requestAnimationFrame(animateParallax);
+  };
+
+  showPage('home');
+  animateParallax();
 </script>
 </body>
 </html>
