@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DarkRevolt</title>
+  <style>
+    :root {
+      --bg-start: #0a0f0f;
+      --bg-end: #1a1f2f;
+      --text: #ffffff;
+      --menu-hover: rgba(88, 138, 255, 0.24);
+      --menu-active: rgba(88, 138, 255, 0.38);
+      --line: rgba(255, 255, 255, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.7) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px);
+      background-size: 3px 3px, 4px 4px, 5px 5px;
+      z-index: 0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .site-header {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding-top: 30px;
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .site-title {
+      font-size: clamp(42px, 7vw, 78px);
+      letter-spacing: 6px;
+      font-weight: 800;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+    }
+
+    .header-divider {
+      margin: 12px auto 0;
+      width: min(680px, 85vw);
+      height: 1px;
+      background: var(--line);
+    }
+
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 18px;
+      left: 16px;
+      z-index: 12;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      background: rgba(15, 20, 31, 0.92);
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .side-nav {
+      position: fixed;
+      left: 20px;
+      top: 100px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .profile-btn {
+      width: 56px;
+      height: 56px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 14px;
+      background: rgba(15, 20, 31, 0.85);
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin-bottom: 10px;
+    }
+
+    .profile-btn:hover {
+      background: var(--menu-hover);
+      transform: translateX(4px);
+    }
+
+    .menu-item {
+      width: 230px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-size: 18px;
+      text-align: left;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .menu-item:hover {
+      background: var(--menu-hover);
+      transform: translateX(5px);
+    }
+
+    .menu-item span:first-child {
+      transition: transform 0.3s ease;
+    }
+
+    .menu-item:hover span:first-child {
+      transform: rotate(10deg);
+    }
+
+    .menu-item.active {
+      background: var(--menu-active);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .profile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 60;
+    }
+
+    .profile-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .profile-drawer {
+      width: 320px;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(11, 17, 28, 0.98), rgba(16, 23, 37, 0.98));
+      border-right: 1px solid rgba(255, 255, 255, 0.24);
+      padding: 20px 18px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      box-shadow: 12px 0 32px rgba(0, 0, 0, 0.45);
+      overflow-y: auto;
+    }
+
+    .profile-overlay.open .profile-drawer {
+      transform: translateX(0);
+    }
+
+    .profile-close-x {
+      margin-left: auto;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: block;
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-close-x:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .profile-name {
+      font-size: 34px;
+      font-weight: 800;
+      margin: 8px 0 12px;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.14);
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .profile-status {
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffd447;
+      text-shadow: 0 0 10px rgba(255, 212, 71, 0.4);
+      margin-bottom: 16px;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .profile-stat {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      padding: 9px 10px;
+    }
+
+    .profile-stat-label {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .profile-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .profile-purchases-title {
+      font-size: 14px;
+      letter-spacing: 0.8px;
+      opacity: 0.84;
+      margin-bottom: 8px;
+    }
+
+    .profile-purchases-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .profile-purchases-list li {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 14px;
+    }
+
+    .profile-close-btn {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 11px 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .stats-panel {
+      position: fixed;
+      top: 110px;
+      left: 280px;
+      z-index: 6;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .stat-card {
+      width: 220px;
+      min-height: 130px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      box-shadow: 0 0 18px rgba(120, 170, 255, 0.15), inset 0 0 18px rgba(120, 170, 255, 0.08);
+      transition: transform 0.3s ease;
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .stat-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 26px rgba(120, 170, 255, 0.32), inset 0 0 22px rgba(120, 170, 255, 0.14);
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .stat-title {
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      opacity: 0.65;
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 40px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+
+    .stat-card:hover .stat-value {
+      color: #d9e9ff;
+    }
+
+    .online-icon {
+      color: #35d86b;
+      text-shadow: 0 0 10px rgba(53, 216, 107, 0.8);
+    }
+
+    .privileges-panel {
+      position: fixed;
+      top: 275px;
+      left: 280px;
+      z-index: 6;
+      width: calc(100% - 310px);
+      max-width: 980px;
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .privileges-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      letter-spacing: 1px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .privileges-grid {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .privilege-item {
+      flex: 1 1 220px;
+      min-height: 84px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.05), 0 6px 16px rgba(0, 0, 0, 0.35);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .privilege-icon {
+      font-size: 22px;
+      line-height: 1;
+      width: 30px;
+      text-align: center;
+      flex: 0 0 30px;
+    }
+
+    .privilege-name {
+      flex: 1;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .privilege-value {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1;
+      min-width: 34px;
+      text-align: right;
+      transition: transform 0.3s ease;
+    }
+
+    .privilege-item:hover .privilege-value {
+      transform: scale(1.18);
+    }
+
+    .privilege-item:hover {
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.1), 0 0 20px rgba(140, 182, 255, 0.5);
+    }
+
+    .privilege-owner {
+      background: rgba(84, 17, 17, 0.72);
+    }
+
+    .privilege-owner:hover {
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.06), 0 0 18px rgba(255, 206, 86, 0.85);
+    }
+
+    .privilege-admin {
+      background: rgba(19, 49, 106, 0.72);
+    }
+
+    .privilege-jr-admin {
+      background: rgba(83, 28, 105, 0.72);
+    }
+
+    .privilege-donaters {
+      background: rgba(24, 98, 45, 0.72);
+    }
+
+    .purchases-panel {
+      position: fixed;
+      top: 435px;
+      left: 280px;
+      z-index: 6;
+      width: calc(100% - 310px);
+      max-width: 980px;
+      animation: fadeInUp 0.55s ease both;
+    }
+
+    .purchases-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      letter-spacing: 1px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .purchases-table-wrap {
+      width: 100%;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.04), 0 8px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .purchases-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .purchases-table th,
+    .purchases-table td {
+      padding: 11px 12px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .purchases-table th {
+      font-size: 13px;
+      letter-spacing: 1px;
+      opacity: 0.72;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      background: rgba(13, 18, 29, 0.96);
+      backdrop-filter: blur(2px);
+      z-index: 1;
+    }
+
+    .purchases-table tbody tr:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .purchases-table tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .purchases-table tbody tr:hover {
+      background: rgba(114, 158, 255, 0.2);
+      transform: scale(1.01);
+    }
+
+    .purchases-table tbody tr {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      animation: fadeIn 0.45s ease both;
+    }
+
+    .avatar-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: block;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .priv-legend {
+      color: #ffd447;
+      font-weight: 700;
+    }
+
+    .priv-premium {
+      color: #6eb2ff;
+      font-weight: 700;
+    }
+
+    .priv-vip {
+      color: #60e27f;
+      font-weight: 700;
+    }
+
+    .priv-vip-plus {
+      color: #cc86ff;
+      font-weight: 700;
+    }
+
+    .time-col {
+      font-size: 13px;
+      opacity: 0.62;
+    }
+
+    .stats-panel .stat-card:nth-child(1) { animation-delay: 0.10s; }
+    .stats-panel .stat-card:nth-child(2) { animation-delay: 0.20s; }
+    .stats-panel .stat-card:nth-child(3) { animation-delay: 0.30s; }
+
+    .purchases-table tbody tr:nth-child(1) { animation-delay: 0.10s; }
+    .purchases-table tbody tr:nth-child(2) { animation-delay: 0.20s; }
+    .purchases-table tbody tr:nth-child(3) { animation-delay: 0.30s; }
+    .purchases-table tbody tr:nth-child(4) { animation-delay: 0.40s; }
+    .purchases-table tbody tr:nth-child(5) { animation-delay: 0.50s; }
+
+    @media (max-width: 1200px) {
+      .stats-panel {
+        left: 280px;
+        right: 20px;
+        flex-wrap: wrap;
+      }
+
+      .privileges-panel {
+        left: 280px;
+        right: 20px;
+        width: auto;
+      }
+
+      .purchases-panel {
+        left: 280px;
+        right: 20px;
+        width: auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .side-nav {
+        top: 74px;
+        left: 0;
+        height: calc(100vh - 74px);
+        padding: 16px;
+        background: rgba(12, 16, 24, 0.96);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        transform: translateX(-110%);
+        transition: transform 0.3s ease;
+      }
+
+      .side-nav.open {
+        transform: translateX(0);
+      }
+
+      .stats-panel {
+        position: relative;
+        top: 24px;
+        left: 0;
+        right: auto;
+        padding: 0 16px 24px;
+        flex-direction: column;
+      }
+
+      .stat-card {
+        width: min(100%, 420px);
+      }
+
+      .privileges-panel {
+        position: relative;
+        top: 30px;
+        left: 0;
+        right: auto;
+        width: 100%;
+        padding: 0 16px 36px;
+      }
+
+      .privileges-grid {
+        flex-direction: column;
+      }
+
+      .privilege-item {
+        width: min(100%, 420px);
+      }
+
+      .purchases-panel {
+        position: relative;
+        top: 34px;
+        left: 0;
+        right: auto;
+        width: 100%;
+        padding: 0 16px 28px;
+      }
+
+      .profile-drawer {
+        width: min(320px, 90vw);
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <h1 class="site-title">DARKREVOLT</h1>
+  <div class="header-divider"></div>
+</header>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">☰</button>
+
+<nav class="side-nav" id="sideNav" aria-label="Навигация">
+  <button class="profile-btn" id="profileBtn" aria-label="Профиль">👤</button>
+
+  <button class="menu-item active"><span>🏠</span><span>Главная</span></button>
+  <button class="menu-item"><span>🎮</span><span>Режимы игры</span></button>
+  <button class="menu-item"><span>💎</span><span>Донат</span></button>
+  <button class="menu-item"><span>📰</span><span>Новости</span></button>
+  <button class="menu-item"><span>🏆</span><span>Топ игроков</span></button>
+  <button class="menu-item"><span>📜</span><span>Правила</span></button>
+</nav>
+
+<section class="stats-panel" aria-label="Статистика сервера">
+  <article class="stat-card">
+    <div class="stat-head">
+      <span class="stat-icon online-icon">●</span>
+      <span class="stat-title">ОНЛАЙН</span>
+    </div>
+    <div class="stat-value">42/200</div>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-head">
+      <span class="stat-icon">👥</span>
+      <span class="stat-title">ВСЕГО ИГРОКОВ</span>
+    </div>
+    <div class="stat-value">1250</div>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-head">
+      <span class="stat-icon">💎</span>
+      <span class="stat-title">ДОНАТЕРОВ</span>
+    </div>
+    <div class="stat-value">87</div>
+  </article>
+</section>
+
+<section class="privileges-panel" aria-label="Привилегии сервера">
+  <h2 class="privileges-title"><span>👑</span><span>ПРИВИЛЕГИИ СЕРВЕРА</span></h2>
+  <div class="privileges-grid">
+    <article class="privilege-item privilege-owner">
+      <span class="privilege-icon">👑</span>
+      <span class="privilege-name">Владелец</span>
+      <span class="privilege-value">2</span>
+    </article>
+    <article class="privilege-item privilege-admin">
+      <span class="privilege-icon">🛡️</span>
+      <span class="privilege-name">Админ</span>
+      <span class="privilege-value">5</span>
+    </article>
+    <article class="privilege-item privilege-jr-admin">
+      <span class="privilege-icon">⭐</span>
+      <span class="privilege-name">Мл.Админ</span>
+      <span class="privilege-value">12</span>
+    </article>
+    <article class="privilege-item privilege-donaters">
+      <span class="privilege-icon">💎</span>
+      <span class="privilege-name">Донатеры</span>
+      <span class="privilege-value">68</span>
+    </article>
+  </div>
+</section>
+
+<section class="purchases-panel" aria-label="Последние покупки">
+  <h2 class="purchases-title"><span>🛒</span><span>ПОСЛЕДНИЕ ПОКУПКИ</span></h2>
+  <div class="purchases-table-wrap">
+    <table class="purchases-table">
+      <thead>
+      <tr>
+        <th>Аватар</th>
+        <th>Ник</th>
+        <th>Привилегия</th>
+        <th>Время</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><img class="avatar-img" src="https://minotar.net/avatar/NightCreeper/32.png" alt="NightCreeper"></td>
+        <td>NightCreeper</td>
+        <td><span class="priv-legend">Legend</span></td>
+        <td class="time-col">только что</td>
+      </tr>
+      <tr>
+        <td><img class="avatar-img" src="https://minotar.net/avatar/AlphaKz/32.png" alt="AlphaKz"></td>
+        <td>AlphaKz</td>
+        <td><span class="priv-premium">Premium</span></td>
+        <td class="time-col">только что</td>
+      </tr>
+      <tr>
+        <td><img class="avatar-img" src="https://minotar.net/avatar/StoneRider/32.png" alt="StoneRider"></td>
+        <td>StoneRider</td>
+        <td><span class="priv-vip">VIP</span></td>
+        <td class="time-col">только что</td>
+      </tr>
+      <tr>
+        <td><img class="avatar-img" src="https://minotar.net/avatar/NeoBuilder/32.png" alt="NeoBuilder"></td>
+        <td>NeoBuilder</td>
+        <td><span class="priv-vip-plus">VIP+</span></td>
+        <td class="time-col">только что</td>
+      </tr>
+      <tr>
+        <td><img class="avatar-img" src="https://minotar.net/avatar/FoxBlade/32.png" alt="FoxBlade"></td>
+        <td>FoxBlade</td>
+        <td><span class="priv-legend">Кейс Легенд</span></td>
+        <td class="time-col">только что</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="profile-overlay" id="profileOverlay" aria-hidden="true">
+  <aside class="profile-drawer" id="profileDrawer" aria-label="Профиль игрока">
+    <button class="profile-close-x" id="profileCloseX" aria-label="Закрыть панель">×</button>
+    <h2 class="profile-name">Zhanassyl</h2>
+    <img class="profile-avatar" src="https://minotar.net/avatar/Zhanassyl/100.png" alt="Аватар Zhanassyl">
+    <div class="profile-status">Legend-донатер</div>
+
+    <div class="profile-stats">
+      <div class="profile-stat"><span class="profile-stat-label">Убийств</span><span class="profile-stat-value">1,247</span></div>
+      <div class="profile-stat"><span class="profile-stat-label">Смертей</span><span class="profile-stat-value">843</span></div>
+      <div class="profile-stat"><span class="profile-stat-label">KDR</span><span class="profile-stat-value">1.48</span></div>
+      <div class="profile-stat"><span class="profile-stat-label">Часов</span><span class="profile-stat-value">327</span></div>
+      <div class="profile-stat"><span class="profile-stat-label">Потрачено</span><span class="profile-stat-value">23,500₸</span></div>
+      <div class="profile-stat"><span class="profile-stat-label">Побед</span><span class="profile-stat-value">89</span></div>
+    </div>
+
+    <h3 class="profile-purchases-title">Купленные привилегии</h3>
+    <ul class="profile-purchases-list">
+      <li>VIP (12.01.2026)</li>
+      <li>Premium (23.02.2026)</li>
+      <li>Legend (01.03.2026)</li>
+    </ul>
+
+    <button class="profile-close-btn" id="profileCloseBtn">Закрыть</button>
+  </aside>
+</div>
+
+<script>
+  const menuItems = document.querySelectorAll('.menu-item');
+  const profileBtn = document.getElementById('profileBtn');
+  const profileOverlay = document.getElementById('profileOverlay');
+  const profileDrawer = document.getElementById('profileDrawer');
+  const profileCloseX = document.getElementById('profileCloseX');
+  const profileCloseBtn = document.getElementById('profileCloseBtn');
+  const menuToggle = document.getElementById('menuToggle');
+  const sideNav = document.getElementById('sideNav');
+
+  menuItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      menuItems.forEach((el) => el.classList.remove('active'));
+      item.classList.add('active');
+      if (window.innerWidth <= 768) {
+        sideNav.classList.remove('open');
+      }
+    });
+  });
+
+  const closeProfile = () => {
+    profileOverlay.classList.remove('open');
+    profileOverlay.setAttribute('aria-hidden', 'true');
+  };
+
+  profileBtn.addEventListener('click', () => {
+    profileOverlay.classList.add('open');
+    profileOverlay.setAttribute('aria-hidden', 'false');
+  });
+
+  profileCloseX.addEventListener('click', closeProfile);
+  profileCloseBtn.addEventListener('click', closeProfile);
+
+  menuToggle.addEventListener('click', () => {
+    sideNav.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (event) => {
+    if (profileOverlay.classList.contains('open') && event.target === profileOverlay) {
+      closeProfile();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && profileOverlay.classList.contains('open')) {
+      closeProfile();
+    }
+  });
+</script>
+</body>
+</html>

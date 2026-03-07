@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DarkRevolt - Профиль</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #0b0f14;
+      --bg1: #111823;
+      --panel: #161f2c;
+      --panel-2: #1b2736;
+      --line: #2f3f54;
+      --text: #e5edf7;
+      --muted: #97a9bd;
+      --green: #65d96c;
+      --gold: #f4ca63;
+      --accent: #6eb5ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Rubik, sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(101, 217, 108, 0.16), transparent 38%),
+        radial-gradient(circle at 84% 88%, rgba(95, 147, 201, 0.12), transparent 34%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.16;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      z-index: -1;
+    }
+
+    .layout {
+      width: min(1100px, 94vw);
+      margin: 18px auto 24px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(23, 34, 48, 0.93), rgba(17, 25, 36, 0.95));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand {
+      font-family: "Press Start 2P", cursive;
+      font-size: 11px;
+      color: #c9ffd1;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .back {
+      border: 1px solid #3f5977;
+      border-radius: 9px;
+      background: linear-gradient(180deg, #2a3f57, #1b2a3b);
+      color: #e9f4ff;
+      padding: 9px 12px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .header-grid {
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .title {
+      margin: 0;
+      font-family: "Press Start 2P", cursive;
+      font-size: clamp(18px, 2.8vw, 30px);
+      color: #ceffd5;
+      line-height: 1.2;
+    }
+
+    .meta {
+      margin-top: 10px;
+      display: grid;
+      gap: 6px;
+      font-size: 15px;
+    }
+
+    .meta b { color: #eaf3ff; }
+    .status { color: var(--gold); font-weight: 800; }
+
+    .avatar-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 126px;
+      height: 126px;
+      border-radius: 12px;
+      border: 2px solid #3b5878;
+      background:
+        linear-gradient(135deg, #d8ae84 35%, #3f78bc 35% 62%, #2e537d 62%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 6px, transparent 6px, transparent 12px);
+      box-shadow: 0 0 0 3px rgba(16, 27, 40, 0.85);
+      position: relative;
+    }
+
+    .avatar::before,
+    .avatar::after {
+      content: "";
+      position: absolute;
+      top: 46px;
+      width: 12px;
+      height: 12px;
+      background: #1d2a3a;
+      border-radius: 2px;
+    }
+    .avatar::before { left: 36px; }
+    .avatar::after { right: 36px; }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #dcedff;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .stat-card {
+      background: var(--panel-2);
+      border: 1px solid #34465f;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat-value {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #eef6ff;
+    }
+
+    .stat-value.green { color: var(--green); }
+    .stat-value.gold { color: var(--gold); }
+
+    .priv-list {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.7;
+      color: #d4e4f4;
+      font-size: 15px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid #304157;
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+      background: var(--panel-2);
+    }
+
+    th,
+    td {
+      padding: 11px 10px;
+      border-bottom: 1px solid #304157;
+      text-align: left;
+    }
+
+    th {
+      background: #1f2e41;
+      color: #cfe7ff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 12px;
+    }
+
+    .k-col { color: var(--green); font-weight: 700; }
+
+    @media (max-width: 760px) {
+      .header-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .avatar-wrap {
+        justify-content: flex-start;
+      }
+
+      .stat-value {
+        font-size: 20px;
+      }
+
+      .title {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <header class="panel topbar">
+      <div class="brand">DarkRevolt</div>
+      <a class="back" href="index.html">Вернуться на главную</a>
+    </header>
+
+    <section class="panel header-grid">
+      <div>
+        <h1 class="title">Профиль Игрока</h1>
+        <div class="meta">
+          <div>Никнейм: <b>Player123</b></div>
+          <div>Статус: <span class="status">Legend-донатер</span></div>
+          <div>Дата регистрации: <b>12.03.2025</b></div>
+          <div>Последний вход: <b>5 минут назад</b></div>
+        </div>
+      </div>
+      <div class="avatar-wrap">
+        <div class="avatar" aria-label="Скин игрока"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Статистика</h2>
+      <div class="stats-grid">
+        <article class="stat-card"><div class="stat-label">Убийств</div><div class="stat-value green">1,247</div></article>
+        <article class="stat-card"><div class="stat-label">Смертей</div><div class="stat-value">843</div></article>
+        <article class="stat-card"><div class="stat-label">KDR</div><div class="stat-value">1.48</div></article>
+        <article class="stat-card"><div class="stat-label">Сыграно часов</div><div class="stat-value">327</div></article>
+        <article class="stat-card"><div class="stat-label">Потрачено тенге</div><div class="stat-value gold">23,500</div></article>
+        <article class="stat-card"><div class="stat-label">Победы</div><div class="stat-value">89</div></article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Купленные привилегии</h2>
+      <ul class="priv-list">
+        <li>VIP (12.01.2026)</li>
+        <li>Premium (23.02.2026)</li>
+        <li>Legend (01.03.2026)</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Статистика по режимам</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Режим</th>
+              <th>Победы</th>
+              <th>Убийства</th>
+              <th>Смерти</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>BedWars</td>
+              <td>45</td>
+              <td class="k-col">612</td>
+              <td>401</td>
+            </tr>
+            <tr>
+              <td>SkyWars</td>
+              <td>32</td>
+              <td class="k-col">523</td>
+              <td>312</td>
+            </tr>
+            <tr>
+              <td>Anarchy</td>
+              <td>12</td>
+              <td class="k-col">112</td>
+              <td>130</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

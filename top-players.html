@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DarkRevolt - Топ игроков</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #0b0f14;
+      --bg1: #111823;
+      --panel: #161f2c;
+      --line: #2f3f54;
+      --text: #e5edf7;
+      --muted: #97a9bd;
+      --green: #65d96c;
+      --accent: #6eb5ff;
+      --gold: #f4ca63;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Rubik, sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(101, 217, 108, 0.17), transparent 38%),
+        radial-gradient(circle at 84% 88%, rgba(95, 147, 201, 0.12), transparent 34%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.18;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #243144;
+      background: rgba(10, 14, 20, 0.86);
+      backdrop-filter: blur(6px);
+    }
+
+    .brand {
+      font-family: "Press Start 2P", cursive;
+      font-size: 11px;
+      color: #c9ffd1;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .back-btn {
+      border: 1px solid #3f5977;
+      border-radius: 9px;
+      background: linear-gradient(180deg, #2a3f57, #1b2a3b);
+      color: #e9f4ff;
+      padding: 9px 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .layout {
+      width: min(1040px, 94vw);
+      margin: 20px auto 26px;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, rgba(23, 34, 48, 0.93), rgba(17, 25, 36, 0.95));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+
+    .title {
+      margin: 0;
+      font-family: "Press Start 2P", cursive;
+      font-size: clamp(20px, 3.2vw, 32px);
+      line-height: 1.2;
+      color: #ceffd5;
+      text-shadow: 0 0 12px rgba(101, 217, 108, 0.35);
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .table-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #304157;
+      text-align: left;
+      font-size: 15px;
+    }
+
+    th {
+      background: #1f2e41;
+      color: #cfe7ff;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 12px;
+    }
+
+    tbody tr:hover {
+      background: rgba(44, 67, 92, 0.35);
+    }
+
+    .rank {
+      font-weight: 800;
+      color: var(--gold);
+      width: 70px;
+    }
+
+    .kills {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .mode {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .layout {
+        margin: 14px auto 20px;
+      }
+
+      .title {
+        font-size: 22px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        font-size: 13px;
+        padding: 10px 8px;
+      }
+
+      table {
+        min-width: 560px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">DarkRevolt</div>
+    <a class="back-btn" href="index.html">На главную</a>
+  </header>
+
+  <main class="layout">
+    <section class="hero">
+      <h1 class="title">Топ игроков</h1>
+      <p class="subtitle">Рейтинг формируется по количеству убийств (по убыванию). Данные тестовые.</p>
+    </section>
+
+    <section class="table-card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Место</th>
+              <th>Ник</th>
+              <th>Убийства</th>
+              <th>Победы</th>
+              <th>Режим</th>
+            </tr>
+          </thead>
+          <tbody id="playersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const players = [
+      { nick: "RustSoul", kills: 811, wins: 132, mode: "Anarchy" },
+      { nick: "CloudReaper", kills: 529, wins: 91, mode: "SkyWars" },
+      { nick: "ArrowZen", kills: 503, wins: 88, mode: "SkyWars" },
+      { nick: "BlockHunter", kills: 412, wins: 75, mode: "BedWars" },
+      { nick: "FastBridge", kills: 387, wins: 69, mode: "BedWars" },
+      { nick: "VoidNomad", kills: 768, wins: 120, mode: "Anarchy" },
+      { nick: "DriftBlade", kills: 466, wins: 80, mode: "SkyWars" },
+      { nick: "IronWrath", kills: 739, wins: 116, mode: "Anarchy" }
+    ];
+
+    const tableBody = document.getElementById("playersTableBody");
+
+    function renderSortedByKills() {
+      const sorted = [...players].sort((a, b) => b.kills - a.kills);
+      tableBody.innerHTML = "";
+
+      sorted.forEach((player, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML =
+          "<td class='rank'>#" + (index + 1) + "</td>" +
+          "<td>" + player.nick + "</td>" +
+          "<td class='kills'>" + player.kills + "</td>" +
+          "<td>" + player.wins + "</td>" +
+          "<td class='mode'>" + player.mode + "</td>";
+        tableBody.appendChild(row);
+      });
+    }
+
+    renderSortedByKills();
+  </script>
+</body>
+</html>
