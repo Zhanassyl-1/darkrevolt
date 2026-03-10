@@ -79,7 +79,8 @@ const createInvoice = async ({ nick, privilege, amount }) => {
       asset: 'USDT',
       amount: usdtAmount,
       description: `DarkRevolt: ${privilege} for ${nick}`,
-      payload
+      payload,
+      webhook_url: 'https://darkrevolt-production.up.railway.app/crypto-webhook'
     },
     {
       headers: {
