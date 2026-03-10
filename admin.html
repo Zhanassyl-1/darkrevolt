@@ -435,7 +435,6 @@
     if (!firestoreDb) return;
     firestoreDb.collection('purchases')
       .orderBy('timestamp', 'desc')
-      .limit(300)
       .onSnapshot((snapshot) => {
         cachedPurchases = snapshot.docs.map((doc) => {
           const data = doc.data() || {};
@@ -466,6 +465,8 @@
         });
         updateCounters(cachedPurchases);
         renderTable();
+      }, () => {
+        // Ignore snapshot errors for now.
       });
   };
 

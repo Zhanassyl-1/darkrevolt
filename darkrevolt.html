@@ -4065,7 +4065,7 @@
       amount,
       paymentMethod: 'kaspi',
       status: 'pending',
-      timestamp: Date.now()
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
       kaspiQrText.textContent = 'Заявка принята! Ожидайте подтверждения ⏳';
     }).catch(() => {
