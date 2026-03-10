@@ -98,6 +98,11 @@
       to { opacity: 1; }
     }
 
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .site-header {
       text-align: center;
       padding-top: 28px;
@@ -494,6 +499,10 @@
     .priv-premium { color: #6eb2ff; font-weight: 700; }
     .priv-vip { color: #60e27f; font-weight: 700; }
     .priv-vip-plus { color: #cc86ff; font-weight: 700; }
+
+    .purchase-row-new {
+      animation: slideInDown 0.45s ease both;
+    }
 
     .time-col {
       font-size: 13px;
@@ -1839,6 +1848,13 @@
       gap: 10px;
     }
 
+    .purchase-nick-row {
+      margin: 6px 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     .card-pay-btn {
       align-self: flex-start;
       border: 1px solid rgba(130, 223, 146, 0.5);
@@ -1906,6 +1922,79 @@
       font-size: 12px;
       font-weight: 700;
       color: #ffe39a;
+    }
+
+    .auth-status {
+      font-size: 14px;
+      line-height: 1.4;
+      opacity: 0.85;
+      margin: 4px 0 10px;
+    }
+
+    .auth-status.error {
+      color: #ff8b8b;
+      opacity: 0.95;
+    }
+
+    .auth-status.success {
+      color: #7fe0a0;
+      opacity: 0.95;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .auth-tab-btn {
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .auth-tab-btn.active {
+      background: rgba(104, 163, 255, 0.3);
+      border-color: rgba(160, 206, 255, 0.78);
+    }
+
+    .auth-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .auth-primary-btn,
+    .auth-secondary-btn {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .auth-primary-btn:hover,
+    .auth-secondary-btn:hover {
+      transform: scale(1.03);
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 220, 133, 0.65);
+    }
+
+    .auth-secondary-btn {
+      background: rgba(104, 163, 255, 0.2);
+      border-color: rgba(150, 196, 255, 0.5);
     }
 
     @media (max-width: 1000px) {
@@ -2063,6 +2152,7 @@
   <nav class="left-col" id="leftCol" aria-label="Навигация">
     <div class="side-nav">
       <button class="profile-btn" id="profileBtn" aria-label="Профиль">👤</button>
+      <button class="menu-item" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i><span id="loginBtnText">Войти / Регистрация</span></button>
       <button class="menu-item active" data-page="home"><i class="fa-solid fa-house"></i><span>Главная</span></button>
       <button class="menu-item" data-page="gamemodes"><i class="fa-solid fa-sword"></i><span>Режимы игры</span></button>
       <button class="menu-item" data-page="donate"><i class="fa-solid fa-coins"></i><span>Донат</span></button>
@@ -2850,10 +2940,63 @@
   </div>
 </div>
 
+<div class="payment-method-modal" id="authModal" aria-hidden="true">
+  <div class="payment-box">
+    <h3 class="payment-title">Аккаунт DarkRevolt</h3>
+    <div class="auth-status" id="authStatus">Войдите или зарегистрируйтесь, чтобы сохранить ник Minecraft.</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" type="button" data-auth-tab="login">Вход</button>
+      <button class="auth-tab-btn" type="button" data-auth-tab="register">Регистрация</button>
+    </div>
+
+    <div class="auth-panel" data-auth-panel="login">
+      <div>
+        <label class="card-label" for="loginEmailInput">Email</label>
+        <input class="card-input" id="loginEmailInput" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div>
+        <label class="card-label" for="loginPasswordInput">Пароль</label>
+        <input class="card-input" id="loginPasswordInput" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="auth-actions">
+        <button class="auth-primary-btn" id="loginSubmitBtn" type="button">Войти</button>
+        <button class="auth-secondary-btn" id="logoutBtn" type="button" style="display: none;">Выйти</button>
+      </div>
+    </div>
+
+    <div class="auth-panel" data-auth-panel="register" style="display: none;">
+      <div>
+        <label class="card-label" for="registerNickInput">Ник Minecraft</label>
+        <input class="card-input" id="registerNickInput" type="text" placeholder="NickName" autocomplete="nickname">
+      </div>
+      <div>
+        <label class="card-label" for="registerEmailInput">Email</label>
+        <input class="card-input" id="registerEmailInput" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div>
+        <label class="card-label" for="registerPasswordInput">Пароль</label>
+        <input class="card-input" id="registerPasswordInput" type="password" placeholder="Минимум 6 символов" autocomplete="new-password">
+      </div>
+      <div class="auth-actions">
+        <button class="auth-primary-btn" id="registerSubmitBtn" type="button">Создать аккаунт</button>
+      </div>
+    </div>
+
+    <div class="payment-actions">
+      <button class="payment-close-btn" id="authCloseBtn" type="button">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <div class="payment-modal" id="paymentModal" aria-hidden="true">
   <div class="payment-box">
     <h3 class="payment-title">Выберите способ оплаты</h3>
     <div class="payment-product" id="paymentProduct">Товар: -</div>
+    <div class="purchase-nick-row">
+      <label class="card-label" for="purchaseNickInput">Ник Minecraft для покупки</label>
+      <input class="card-input" id="purchaseNickInput" type="text" placeholder="Введите ник">
+    </div>
 
     <div class="payment-grid">
       <button class="pay-method" data-method="Kaspi">
@@ -2908,6 +3051,15 @@
   <div class="payment-box">
     <h3 class="payment-title" id="methodModalTitle">Способ оплаты</h3>
     <p class="method-subtitle" id="methodModalText">Интеграция метода в разработке.</p>
+    <div id="cryptobotDetails" style="display: none;">
+      <div class="purchase-nick-row" style="margin-top: 0;">
+        <label class="card-label" for="cryptobotAddressInput">USDT (TRC20) кошелек</label>
+        <input class="card-input" id="cryptobotAddressInput" type="text" readonly value="c236680d06da73ea4f69bcebd5da06db638dab80e8562e383af430323d7942fa">
+      </div>
+      <div class="auth-actions" style="margin-top: 4px;">
+        <button class="auth-primary-btn" id="cryptobotCopyBtn" type="button">Скопировать адрес</button>
+      </div>
+    </div>
     <div class="payment-actions">
       <button class="payment-close-btn" id="paymentMethodClose" type="button">Закрыть</button>
     </div>
@@ -2979,12 +3131,17 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.2.0/bundles/skinview3d.bundle.js"></script>
 <script>
   const menuItems = document.querySelectorAll('.menu-item');
   const pageSections = document.querySelectorAll('[data-page-section]');
   const profileBtn = document.getElementById('profileBtn');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginBtnText = document.getElementById('loginBtnText');
   const profilePage = document.getElementById('profilePage');
   const profileCloseX = document.getElementById('profileCloseX');
   const profileCloseBtn = document.getElementById('profileCloseBtn');
@@ -3003,11 +3160,16 @@
   const paymentModal = document.getElementById('paymentModal');
   const paymentClose = document.getElementById('paymentClose');
   const paymentProduct = document.getElementById('paymentProduct');
+  const purchaseNickInput = document.getElementById('purchaseNickInput');
+  const recentPurchasesBody = document.getElementById('recentPurchasesBody');
   const paymentMethods = document.querySelectorAll('.pay-method');
   const paymentMethodModal = document.getElementById('paymentMethodModal');
   const methodModalTitle = document.getElementById('methodModalTitle');
   const methodModalText = document.getElementById('methodModalText');
   const paymentMethodClose = document.getElementById('paymentMethodClose');
+  const cryptobotDetails = document.getElementById('cryptobotDetails');
+  const cryptobotAddressInput = document.getElementById('cryptobotAddressInput');
+  const cryptobotCopyBtn = document.getElementById('cryptobotCopyBtn');
   const kaspiModal = document.getElementById('kaspiModal');
   const kaspiProductText = document.getElementById('kaspiProductText');
   const kaspiPhoneInput = document.getElementById('kaspiPhoneInput');
@@ -3031,6 +3193,19 @@
   const leftCol = document.getElementById('leftCol');
   const parallaxBack = document.getElementById('parallaxBack');
   const parallaxFront = document.getElementById('parallaxFront');
+  const authModal = document.getElementById('authModal');
+  const authCloseBtn = document.getElementById('authCloseBtn');
+  const authStatus = document.getElementById('authStatus');
+  const authTabButtons = document.querySelectorAll('.auth-tab-btn');
+  const authPanels = document.querySelectorAll('.auth-panel');
+  const loginEmailInput = document.getElementById('loginEmailInput');
+  const loginPasswordInput = document.getElementById('loginPasswordInput');
+  const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const registerNickInput = document.getElementById('registerNickInput');
+  const registerEmailInput = document.getElementById('registerEmailInput');
+  const registerPasswordInput = document.getElementById('registerPasswordInput');
+  const registerSubmitBtn = document.getElementById('registerSubmitBtn');
 
   let mouseX = 0;
   let mouseY = 0;
@@ -3040,6 +3215,7 @@
   let frontY = 0;
   let selectedProduct = null;
   let selectedKit = null;
+  let selectedPaymentMethod = '';
   let kaspiPaymentUrl = '';
   let skinViewer = null;
   let targetBodyX = 0;
@@ -3050,6 +3226,10 @@
   let currentBodyY = 0;
   let headNode = null;
   let profileCountersAnimated = false;
+  let firebaseApp = null;
+  let firebaseAuth = null;
+  let firestoreDb = null;
+  let currentUserProfile = null;
   const BODY_YAW_LIMIT = Math.PI / 12;
   const BODY_PITCH_LIMIT = 0.04;
   const HEAD_YAW_LIMIT = Math.PI / 4.75;
@@ -3060,6 +3240,14 @@
   const HEAD_PITCH_BIAS = -0.08;
   const APIPAY_URL = 'https://bpapi.bazarbay.site/api/invoices';
   const APIPAY_API_KEY = window.APIPAY_API_KEY || '';
+  const FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
+    apiKey: "AIzaSyDxnC-cXeLppC1e3Hrq4UlFtcmoHGkOMC4",
+    authDomain: "flutter-ai-playground-d76ae.firebaseapp.com",
+    projectId: "flutter-ai-playground-d76ae",
+    storageBucket: "flutter-ai-playground-d76ae.firebasestorage.app",
+    messagingSenderId: "830387927304",
+    appId: "1:830387927304:web:5dbae493653b61c29b94bd"
+  };
   const kitCompositions = {
     start: [
       { name: 'Дер. меч', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/wooden_sword.png' },
@@ -3111,11 +3299,145 @@
     ]
   };
 
+  const privilegeStyles = {
+    VIP: 'priv-vip',
+    Premium: 'priv-premium',
+    Legend: 'priv-legend'
+  };
+
+  const formatRelativeTime = (date) => {
+    if (!date) return '';
+    const now = Date.now();
+    const diffMs = Math.max(0, now - date.getTime());
+    const diffMinutes = Math.floor(diffMs / 60000);
+    if (diffMinutes <= 0) return 'только что';
+    if (diffMinutes === 1) return '1 мин назад';
+    if (diffMinutes < 5) return `${diffMinutes} мин назад`;
+    if (diffMinutes < 60) return `${diffMinutes} мин назад`;
+    const diffHours = Math.floor(diffMinutes / 60);
+    if (diffHours === 1) return '1 ч назад';
+    if (diffHours < 5) return `${diffHours} ч назад`;
+    if (diffHours < 24) return `${diffHours} ч назад`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays === 1) return '1 д назад';
+    return `${diffDays} д назад`;
+  };
+
+  const renderPurchases = (items, newIds = new Set()) => {
+    if (!recentPurchasesBody) return;
+    recentPurchasesBody.innerHTML = '';
+    if (!items.length) {
+      recentPurchasesBody.innerHTML = `
+        <tr>
+          <td colspan="4" class="time-col">Покупок пока нет</td>
+        </tr>
+      `;
+      return;
+    }
+    items.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      if (newIds.has(item.id) && index === 0) {
+        tr.classList.add('purchase-row-new');
+      }
+      const privClass = privilegeStyles[item.privilege] || 'priv-legend';
+      const timeText = formatRelativeTime(item.timestamp);
+      tr.innerHTML = `
+        <td><img class="avatar-img" src="https://minotar.net/avatar/${item.nick}/32.png" alt="${item.nick}"></td>
+        <td>${item.nick}</td>
+        <td><span class="${privClass}">${item.privilege}</span></td>
+        <td class="time-col">${timeText}</td>
+      `;
+      recentPurchasesBody.appendChild(tr);
+    });
+  };
+
   const setActiveMenu = (page) => {
     const menuPage = page === 'mode-skywars' ? 'gamemodes' : page;
     menuItems.forEach((item) => {
       item.classList.toggle('active', item.dataset.page === menuPage);
     });
+  };
+
+  const setAuthStatus = (message, type = '') => {
+    if (!authStatus) return;
+    authStatus.textContent = message;
+    authStatus.classList.remove('error', 'success');
+    if (type) authStatus.classList.add(type);
+  };
+
+  const setAuthTab = (tab) => {
+    authTabButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.authTab === tab));
+    authPanels.forEach((panel) => {
+      const isActive = panel.dataset.authPanel === tab;
+      panel.style.display = isActive ? 'block' : 'none';
+    });
+  };
+
+  const openAuthModal = () => {
+    authModal.classList.add('open');
+    authModal.setAttribute('aria-hidden', 'false');
+  };
+
+  const closeAuthModal = () => {
+    authModal.classList.remove('open');
+    authModal.setAttribute('aria-hidden', 'true');
+  };
+
+  const isFirebaseConfigValid = () => {
+    if (!FIREBASE_CONFIG || typeof FIREBASE_CONFIG !== 'object') return false;
+    const apiKey = FIREBASE_CONFIG.apiKey || '';
+    return Boolean(apiKey);
+  };
+
+  const initFirebase = () => {
+    if (!window.firebase) {
+      setAuthStatus('Firebase не загружен. Проверьте подключение скриптов.', 'error');
+      return;
+    }
+    if (!isFirebaseConfigValid()) {
+      setAuthStatus('Укажите настройки Firebase в FIREBASE_CONFIG, чтобы включить авторизацию.', 'error');
+      return;
+    }
+    if (!firebase.apps.length) {
+      firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+    } else {
+      firebaseApp = firebase.app();
+    }
+    firebaseAuth = firebase.auth();
+    firestoreDb = firebase.firestore();
+  };
+
+  const loadUserProfile = async (user) => {
+    if (!user || !firestoreDb) return null;
+    try {
+      const docRef = firestoreDb.collection('users').doc(user.uid);
+      const snapshot = await docRef.get();
+      if (snapshot.exists) {
+        return snapshot.data();
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  };
+
+  const updateAuthUi = (user, profile) => {
+    currentUserProfile = profile;
+    if (user) {
+      const nick = profile?.minecraftNick || user.displayName || '';
+      setAuthStatus(nick ? `Вы вошли как ${nick}.` : 'Вы вошли в аккаунт.', 'success');
+      if (loginBtnText) {
+        loginBtnText.textContent = nick || 'Аккаунт';
+      }
+      if (logoutBtn) logoutBtn.style.display = 'inline-flex';
+      if (purchaseNickInput && nick) purchaseNickInput.value = nick;
+    } else {
+      setAuthStatus('Войдите или зарегистрируйтесь, чтобы сохранить ник Minecraft.');
+      if (loginBtnText) {
+        loginBtnText.textContent = 'Войти / Регистрация';
+      }
+      if (logoutBtn) logoutBtn.style.display = 'none';
+    }
   };
 
   const showPage = (page) => {
@@ -3365,7 +3687,9 @@
 
   menuItems.forEach((item) => {
     item.addEventListener('click', () => {
-      showPage(item.dataset.page);
+      const targetPage = item.dataset.page;
+      if (!targetPage) return;
+      showPage(targetPage);
       if (window.innerWidth <= 768) {
         leftCol.classList.remove('open');
       }
@@ -3379,12 +3703,92 @@
     updateProfileKdrTone();
   });
 
+  loginBtn?.addEventListener('click', () => {
+    openAuthModal();
+  });
+
+  authCloseBtn?.addEventListener('click', closeAuthModal);
+  authModal?.addEventListener('click', (event) => {
+    if (event.target === authModal) {
+      closeAuthModal();
+    }
+  });
+
+  authTabButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setAuthTab(btn.dataset.authTab || 'login');
+    });
+  });
+
+  loginSubmitBtn?.addEventListener('click', async () => {
+    if (!firebaseAuth) {
+      setAuthStatus('Firebase не настроен.', 'error');
+      return;
+    }
+    const email = (loginEmailInput?.value || '').trim();
+    const password = (loginPasswordInput?.value || '').trim();
+    if (!email || !password) {
+      setAuthStatus('Введите Email и пароль.', 'error');
+      return;
+    }
+    try {
+      await firebaseAuth.signInWithEmailAndPassword(email, password);
+      setAuthStatus('Успешный вход.', 'success');
+    } catch (_) {
+      setAuthStatus('Не удалось войти. Проверьте данные.', 'error');
+    }
+  });
+
+  logoutBtn?.addEventListener('click', async () => {
+    if (!firebaseAuth) return;
+    try {
+      await firebaseAuth.signOut();
+      setAuthStatus('Вы вышли из аккаунта.');
+    } catch (_) {
+      setAuthStatus('Не удалось выйти из аккаунта.', 'error');
+    }
+  });
+
+  registerSubmitBtn?.addEventListener('click', async () => {
+    if (!firebaseAuth || !firestoreDb) {
+      setAuthStatus('Firebase не настроен.', 'error');
+      return;
+    }
+    const nick = (registerNickInput?.value || '').trim();
+    const email = (registerEmailInput?.value || '').trim();
+    const password = (registerPasswordInput?.value || '').trim();
+    if (!nick || !email || !password) {
+      setAuthStatus('Заполните ник, Email и пароль.', 'error');
+      return;
+    }
+    try {
+      const cred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+      if (cred.user) {
+        await cred.user.updateProfile({ displayName: nick });
+        await firestoreDb.collection('users').doc(cred.user.uid).set({
+          minecraftNick: nick,
+          email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+      setAuthStatus('Аккаунт создан. Вы вошли.', 'success');
+      setAuthTab('login');
+    } catch (_) {
+      setAuthStatus('Не удалось создать аккаунт. Проверьте данные.', 'error');
+    }
+  });
+
   profileCloseX.addEventListener('click', closeProfile);
   profileCloseBtn.addEventListener('click', closeProfile);
 
   const openPaymentModal = (product, price) => {
     selectedProduct = { product, price };
+    selectedPaymentMethod = '';
     paymentProduct.textContent = `Товар: ${product} — ${price}₸`;
+    if (purchaseNickInput) {
+      const nick = currentUserProfile?.minecraftNick || firebaseAuth?.currentUser?.displayName || '';
+      if (nick) purchaseNickInput.value = nick;
+    }
     paymentModal.classList.add('open');
     paymentModal.setAttribute('aria-hidden', 'false');
   };
@@ -3396,9 +3800,19 @@
 
   const openMethodModal = (methodName) => {
     methodModalTitle.textContent = `Способ оплаты: ${methodName}`;
-    methodModalText.textContent = selectedProduct
-      ? `Оплата товара "${selectedProduct.product}" через ${methodName} пока в разработке.`
-      : `Оплата через ${methodName} пока в разработке.`;
+    const isCryptobot = methodName === 'Cryptobot';
+    if (cryptobotDetails) {
+      cryptobotDetails.style.display = isCryptobot ? 'block' : 'none';
+    }
+    if (isCryptobot) {
+      methodModalText.textContent = selectedProduct
+        ? `USDT оплата для "${selectedProduct.product}". Сеть TRC20.`
+        : 'USDT оплата. Сеть TRC20.';
+    } else {
+      methodModalText.textContent = selectedProduct
+        ? `Оплата товара "${selectedProduct.product}" через ${methodName} пока в разработке.`
+        : `Оплата через ${methodName} пока в разработке.`;
+    }
     paymentMethodModal.classList.add('open');
     paymentMethodModal.setAttribute('aria-hidden', 'false');
   };
@@ -3507,10 +3921,13 @@
       const method = methodBtn.dataset.method || 'Способ оплаты';
       closePaymentModal();
       if (method === 'Kaspi') {
+        selectedPaymentMethod = method;
         openKaspiModal();
       } else if (method === 'Карты РФ' || method === 'Зарубежные карты') {
+        selectedPaymentMethod = method;
         openCardModal();
       } else {
+        selectedPaymentMethod = method;
         openMethodModal(method);
       }
     });
@@ -3520,6 +3937,17 @@
   paymentMethodModal.addEventListener('click', (event) => {
     if (event.target === paymentMethodModal) {
       closeMethodModal();
+    }
+  });
+
+  cryptobotCopyBtn?.addEventListener('click', async () => {
+    const address = (cryptobotAddressInput?.value || '').trim();
+    if (!address) return;
+    try {
+      await navigator.clipboard.writeText(address);
+      methodModalText.textContent = 'Адрес скопирован.';
+    } catch (_) {
+      methodModalText.textContent = 'Не удалось скопировать адрес.';
     }
   });
 
@@ -3586,7 +4014,37 @@
       kaspiQrWrap.classList.add('show');
       return;
     }
-    kaspiQrText.textContent = 'Тест: оплата отмечена как выполненная.';
+    if (!firestoreDb) {
+      kaspiQrText.textContent = 'Не настроен Firestore.';
+      return;
+    }
+    if (!selectedProduct) {
+      kaspiQrText.textContent = 'Сначала выберите товар.';
+      return;
+    }
+    const nick = (purchaseNickInput?.value || '').trim();
+    if (!nick) {
+      kaspiQrText.textContent = 'Введите ник Minecraft для покупки.';
+      return;
+    }
+    const privilege = selectedProduct.product;
+    if (!privilegeStyles[privilege]) {
+      kaspiQrText.textContent = 'Сейчас сохраняются только привилегии VIP/Premium/Legend.';
+      return;
+    }
+    const amount = Number(selectedProduct.price) || 0;
+    kaspiQrText.textContent = 'Сохраняем покупку...';
+    firestoreDb.collection('purchases').add({
+      nick,
+      privilege,
+      amount,
+      paymentMethod: selectedPaymentMethod || 'Kaspi',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      kaspiQrText.textContent = 'Покупка сохранена.';
+    }).catch(() => {
+      kaspiQrText.textContent = 'Не удалось сохранить покупку.';
+    });
   });
   kaspiModal.addEventListener('click', (event) => {
     if (event.target === kaspiModal) {
@@ -3676,6 +4134,10 @@
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && profilePage.classList.contains('open')) {
       closeProfile();
+      return;
+    }
+    if (event.key === 'Escape' && authModal.classList.contains('open')) {
+      closeAuthModal();
       return;
     }
     if (event.key === 'Escape' && paymentMethodModal.classList.contains('open')) {
@@ -3783,6 +4245,51 @@
   };
 
   updateProfileKdrTone();
+  setAuthTab('login');
+  initFirebase();
+  if (firebaseAuth) {
+    firebaseAuth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        updateAuthUi(null, null);
+        return;
+      }
+      const profile = await loadUserProfile(user);
+      if (profile?.minecraftNick && purchaseNickInput) {
+        purchaseNickInput.value = profile.minecraftNick;
+      }
+      updateAuthUi(user, profile || { minecraftNick: user.displayName || '' });
+    });
+  }
+  if (firestoreDb) {
+    let purchasesCache = [];
+    firestoreDb.collection('purchases')
+      .orderBy('timestamp', 'desc')
+      .limit(10)
+      .onSnapshot((snapshot) => {
+        const newIds = new Set();
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            newIds.add(change.doc.id);
+          }
+        });
+        purchasesCache = snapshot.docs.map((doc) => {
+          const data = doc.data() || {};
+          return {
+            id: doc.id,
+            nick: data.nick || 'Unknown',
+            privilege: data.privilege || 'VIP',
+            amount: data.amount || 0,
+            paymentMethod: data.paymentMethod || '',
+            timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : new Date()
+          };
+        });
+        renderPurchases(purchasesCache, newIds);
+      });
+
+    setInterval(() => {
+      renderPurchases(purchasesCache);
+    }, 60000);
+  }
   initSkinViewer();
   showPage('home');
   animateParallax();
