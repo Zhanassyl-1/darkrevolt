@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DarkRevolt Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text: #ffffff;
+      --line: rgba(255, 255, 255, 0.35);
+      --panel-bg: rgba(0, 0, 0, 0.55);
+      --panel-border: rgba(255, 255, 255, 0.2);
+      --accent: rgba(104, 163, 255, 0.35);
+      --good: #7fe0a0;
+      --bad: #ff8b8b;
+      --warn: #ffd56f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background: #0a0f0f;
+      overflow-x: hidden;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(104, 78, 170, 0.12), transparent 55%),
+        radial-gradient(circle at 85% 80%, rgba(86, 219, 212, 0.1), transparent 50%),
+        #070b11;
+      z-index: -2;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.7) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px);
+      background-size: 3px 3px, 4px 4px, 5px 5px;
+    }
+
+    .layout {
+      width: min(1320px, calc(100vw - 30px));
+      margin: 18px auto 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.04), 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .title {
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.24);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      opacity: 0.8;
+      font-size: 15px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .stat-card {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .filter-btn {
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: rgba(160, 206, 255, 0.78);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      margin-top: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 880px;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 14px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: rgba(13, 18, 29, 0.96);
+      z-index: 1;
+      letter-spacing: 0.4px;
+    }
+
+    tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.03); }
+    tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.07); }
+
+    .status {
+      font-weight: 700;
+    }
+
+    .status.pending { color: var(--warn); }
+    .status.issued { color: var(--good); }
+    .status.rejected { color: var(--bad); }
+
+    .action-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 10px;
+      cursor: pointer;
+      margin-right: 6px;
+    }
+
+    .action-btn.issue { border-color: rgba(127, 224, 160, 0.6); }
+    .action-btn.reject { border-color: rgba(255, 139, 139, 0.6); }
+
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: grid;
+      place-items: center;
+      z-index: 10;
+    }
+
+    .login-box {
+      width: min(420px, 95vw);
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .login-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .login-btn {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+
+    .login-error {
+      margin-top: 8px;
+      color: var(--bad);
+      font-size: 14px;
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="noise"></div>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-title">Вход для владельца</div>
+    <label class="input-label" for="adminPassword">Пароль</label>
+    <input class="input" id="adminPassword" type="password" placeholder="Введите пароль">
+    <button class="login-btn" id="loginBtn">Войти</button>
+    <div class="login-error" id="loginError">Неверный пароль.</div>
+  </div>
+</div>
+
+<div class="layout" id="adminLayout" style="display: none;">
+  <div class="panel">
+    <div class="title">DarkRevolt Admin</div>
+    <div class="subtitle">Заявки на выдачу привилегий</div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">ВСЕГО ЗАЯВОК</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ОЖИДАЮТ ПРОВЕРКИ</div>
+        <div class="stat-value" id="statPending">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ВЫПОЛНЕНО</div>
+        <div class="stat-value" id="statDone">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ОТКЛОНЕНО</div>
+        <div class="stat-value" id="statRejected">0</div>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">Все</button>
+      <button class="filter-btn" data-filter="pending">Ожидают</button>
+      <button class="filter-btn" data-filter="issued">Выполнено</button>
+      <button class="filter-btn" data-filter="rejected">Отклонено</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Ник</th>
+          <th>Привилегия</th>
+          <th>Сумма</th>
+          <th>Способ оплаты</th>
+          <th>Время</th>
+          <th>Статус</th>
+          <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody id="purchasesBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxnC-cXeLppC1e3Hrq4UlFtcmoHGkOMC4",
+    authDomain: "flutter-ai-playground-d76ae.firebaseapp.com",
+    projectId: "flutter-ai-playground-d76ae",
+    storageBucket: "flutter-ai-playground-d76ae.firebasestorage.app",
+    messagingSenderId: "830387927304",
+    appId: "1:830387927304:web:5dbae493653b61c29b94bd"
+  };
+
+  const loginOverlay = document.getElementById('loginOverlay');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+  const adminPassword = document.getElementById('adminPassword');
+  const adminLayout = document.getElementById('adminLayout');
+  const purchasesBody = document.getElementById('purchasesBody');
+  const statTotal = document.getElementById('statTotal');
+  const statPending = document.getElementById('statPending');
+  const statDone = document.getElementById('statDone');
+  const statRejected = document.getElementById('statRejected');
+  const filterButtons = document.querySelectorAll('.filter-btn');
+
+  let firestoreDb = null;
+  let currentFilter = 'all';
+  let cachedPurchases = [];
+
+  const initFirebase = () => {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    firestoreDb = firebase.firestore();
+  };
+
+  const formatTime = (date) => {
+    if (!date) return '-';
+    return date.toLocaleString('ru-RU');
+  };
+
+  const normalizeStatus = (status) => {
+    if (!status || status === 'paid' || status === 'pending') return 'pending';
+    if (status === 'issued' || status === 'done') return 'issued';
+    if (status === 'rejected' || status === 'declined') return 'rejected';
+    return 'pending';
+  };
+
+  const statusLabel = (status) => {
+    if (status === 'pending') return 'Ожидает';
+    if (status === 'issued') return 'Выполнено';
+    if (status === 'rejected') return 'Отклонено';
+    return 'Ожидает';
+  };
+
+  const updateCounters = (items) => {
+    const total = items.length;
+    const pending = items.filter((i) => i.status === 'pending').length;
+    const issued = items.filter((i) => i.status === 'issued').length;
+    const rejected = items.filter((i) => i.status === 'rejected').length;
+    statTotal.textContent = total;
+    statPending.textContent = pending;
+    statDone.textContent = issued;
+    statRejected.textContent = rejected;
+  };
+
+  const renderTable = () => {
+    const filtered = currentFilter === 'all'
+      ? cachedPurchases
+      : cachedPurchases.filter((p) => p.status === currentFilter);
+
+    purchasesBody.innerHTML = '';
+    if (!filtered.length) {
+      purchasesBody.innerHTML = '<tr><td colspan="7">Нет записей</td></tr>';
+      return;
+    }
+    filtered.forEach((p) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${p.nick}</td>
+        <td>${p.privilege}</td>
+        <td>${p.amount}₸</td>
+        <td>${p.paymentMethod || '-'}</td>
+        <td>${formatTime(p.timestamp)}</td>
+        <td class="status ${p.status}">${statusLabel(p.status)}</td>
+        <td>
+          <button class="action-btn issue" data-id="${p.id}" data-action="issued">✅ Выдать</button>
+          <button class="action-btn reject" data-id="${p.id}" data-action="rejected">❌ Отклонить</button>
+        </td>
+      `;
+      purchasesBody.appendChild(tr);
+    });
+  };
+
+  const fetchPurchases = async () => {
+    if (!firestoreDb) return;
+    const snapshot = await firestoreDb.collection('purchases')
+      .orderBy('timestamp', 'desc')
+      .limit(300)
+      .get();
+    cachedPurchases = snapshot.docs.map((doc) => {
+      const data = doc.data() || {};
+      return {
+        id: doc.id,
+        nick: data.nick || 'Unknown',
+        privilege: data.privilege || 'VIP',
+        amount: data.amount || 0,
+        paymentMethod: data.paymentMethod || '',
+        timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : null,
+        status: normalizeStatus(data.status)
+      };
+    });
+    updateCounters(cachedPurchases);
+    renderTable();
+  };
+
+  purchasesBody.addEventListener('click', async (event) => {
+    const btn = event.target.closest('.action-btn');
+    if (!btn || !firestoreDb) return;
+    const docId = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (!docId || !action) return;
+    await firestoreDb.collection('purchases').doc(docId).set({
+      status: action
+    }, { merge: true });
+    await fetchPurchases();
+  });
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter || 'all';
+      renderTable();
+    });
+  });
+
+  loginBtn.addEventListener('click', () => {
+    const value = (adminPassword.value || '').trim();
+    if (value === 'darkrevolt2024') {
+      loginOverlay.style.display = 'none';
+      adminLayout.style.display = 'block';
+      initFirebase();
+      fetchPurchases();
+      setInterval(fetchPurchases, 15000);
+    } else {
+      loginError.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>
