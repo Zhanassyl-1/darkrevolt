@@ -3073,41 +3073,9 @@
         <span class="pay-icon">💳</span>
         <span class="pay-label">Kaspi</span>
       </button>
-      <button class="pay-method" data-method="Карты РФ">
-        <span class="pay-icon">🇷🇺</span>
-        <span class="pay-label">Карты РФ</span>
-      </button>
-      <button class="pay-method" data-method="ЮMoney">
-        <span class="pay-icon">💰</span>
-        <span class="pay-label">ЮMoney</span>
-      </button>
       <button class="pay-method" data-method="Cryptobot">
         <span class="pay-icon">₿</span>
         <span class="pay-label">Cryptobot</span>
-      </button>
-      <button class="pay-method" data-method="Telegram Stars">
-        <span class="pay-icon">⭐</span>
-        <span class="pay-label">Telegram Stars</span>
-      </button>
-      <button class="pay-method" data-method="Зарубежные карты">
-        <span class="pay-icon">🌍</span>
-        <span class="pay-label">Зарубежные карты</span>
-      </button>
-      <button class="pay-method" data-method="Beeline">
-        <span class="pay-icon">📱</span>
-        <span class="pay-label">Beeline</span>
-      </button>
-      <button class="pay-method" data-method="T2">
-        <span class="pay-icon">📱</span>
-        <span class="pay-label">T2</span>
-      </button>
-      <button class="pay-method" data-method="Altel">
-        <span class="pay-icon">📱</span>
-        <span class="pay-label">Altel</span>
-      </button>
-      <button class="pay-method" data-method="Aktiv">
-        <span class="pay-icon">📱</span>
-        <span class="pay-label">Aktiv</span>
       </button>
     </div>
 
@@ -3140,17 +3108,16 @@
     <label class="kaspi-form-label" for="kaspiNickInput">Ник Minecraft</label>
     <input class="kaspi-input" id="kaspiNickInput" type="text" placeholder="Ваш ник">
 
-    <p class="kaspi-qr-note"><strong>Номер Kaspi для перевода:</strong> +77019247108</p>
+    <p class="kaspi-qr-note"><strong>Номер для перевода:</strong> +7XXXXXXXXXX</p>
+    <p class="kaspi-qr-note"><strong>Сумма:</strong> <span id="kaspiAmountText">0т</span></p>
 
-    <div class="kaspi-qr-wrap show" id="kaspiQrWrap">
-      <div class="kaspi-qr-box" id="kaspiQrBox">
-        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><rect width='128' height='128' fill='%23ffffff'/><rect x='12' y='12' width='40' height='40' fill='%23000000'/><rect x='76' y='12' width='40' height='40' fill='%23000000'/><rect x='12' y='76' width='40' height='40' fill='%23000000'/><rect x='60' y='60' width='10' height='10' fill='%23000000'/><rect x='78' y='60' width='10' height='10' fill='%23000000'/><rect x='60' y='78' width='10' height='10' fill='%23000000'/><rect x='88' y='88' width='16' height='16' fill='%23000000'/></svg>" alt="Kaspi QR">
-      </div>
-      <div>
-        <p class="kaspi-qr-note" id="kaspiQrText">1. Переведи 0т на номер выше<br>2. В комментарии напиши свой ник<br>3. Нажми кнопку Я оплатил</p>
-        <button class="payment-close-btn" id="kaspiPaidBtn" type="button">Я оплатил</button>
-      </div>
-    </div>
+    <p class="kaspi-qr-note" id="kaspiQrText">
+      1. Открой Kaspi.kz → Платежи → Перевод по номеру<br>
+      2. Переведи точную сумму<br>
+      3. В комментарии напиши свой ник<br>
+      4. Нажми кнопку ниже
+    </p>
+    <button class="payment-close-btn" id="kaspiPaidBtn" type="button">Я оплатил ✅</button>
 
     <div class="payment-actions">
       <button class="payment-close-btn" id="kaspiCloseBtn" type="button">Закрыть</button>
@@ -3243,9 +3210,8 @@
   const kaspiModal = document.getElementById('kaspiModal');
   const kaspiProductText = document.getElementById('kaspiProductText');
   const kaspiNickInput = document.getElementById('kaspiNickInput');
-  const kaspiQrWrap = document.getElementById('kaspiQrWrap');
-  const kaspiQrBox = document.getElementById('kaspiQrBox');
   const kaspiQrText = document.getElementById('kaspiQrText');
+  const kaspiAmountText = document.getElementById('kaspiAmountText');
   const kaspiCloseBtn = document.getElementById('kaspiCloseBtn');
   const kaspiPaidBtn = document.getElementById('kaspiPaidBtn');
   const cardModal = document.getElementById('cardModal');
@@ -3913,9 +3879,9 @@
       : 'Товар: -';
     const nick = (purchaseNickInput?.value || '').trim();
     if (kaspiNickInput) kaspiNickInput.value = nick;
-    kaspiQrText.textContent = selectedProduct
-      ? `1. Переведи ${selectedProduct.price}т на номер выше\n2. В комментарии напиши свой ник\n3. Нажми кнопку Я оплатил`
-      : '1. Переведи сумму на номер выше\n2. В комментарии напиши свой ник\n3. Нажми кнопку Я оплатил';
+    if (kaspiAmountText) {
+      kaspiAmountText.textContent = selectedProduct ? `${selectedProduct.price}т` : '0т';
+    }
     kaspiModal.classList.add('open');
     kaspiModal.setAttribute('aria-hidden', 'false');
   };
@@ -4099,9 +4065,9 @@
       amount,
       paymentMethod: 'kaspi',
       status: 'pending',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      timestamp: Date.now()
     }).then(() => {
-      kaspiQrText.textContent = 'Заявка принята! Проверим в течение 1 часа ✅';
+      kaspiQrText.textContent = 'Заявка принята! Ожидайте подтверждения ⏳';
     }).catch(() => {
       kaspiQrText.textContent = 'Не удалось сохранить заявку.';
     });
@@ -4324,6 +4290,7 @@
   if (firestoreDb) {
     let purchasesCache = [];
     firestoreDb.collection('purchases')
+      .where('status', '==', 'paid')
       .orderBy('timestamp', 'desc')
       .limit(10)
       .onSnapshot((snapshot) => {
@@ -4335,13 +4302,21 @@
         });
         purchasesCache = snapshot.docs.map((doc) => {
           const data = doc.data() || {};
+          let ts = data.timestamp;
+          if (ts && typeof ts.toDate === 'function') {
+            ts = ts.toDate();
+          } else if (typeof ts === 'number') {
+            ts = new Date(ts);
+          } else {
+            ts = new Date();
+          }
           return {
             id: doc.id,
             nick: data.nick || 'Unknown',
             privilege: data.privilege || 'VIP',
             amount: data.amount || 0,
             paymentMethod: data.paymentMethod || '',
-            timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : new Date()
+            timestamp: ts
           };
         });
         renderPurchases(purchasesCache, newIds);

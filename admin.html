@@ -174,8 +174,12 @@
     }
 
     .status.pending { color: var(--warn); }
-    .status.issued { color: var(--good); }
+    .status.paid { color: var(--good); }
     .status.rejected { color: var(--bad); }
+
+    .row-paid {
+      background: rgba(120, 255, 170, 0.12) !important;
+    }
 
     .action-btn {
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -306,7 +310,7 @@
     <div class="filter-row">
       <button class="filter-btn active" data-filter="all">Все</button>
       <button class="filter-btn" data-filter="pending">Ожидают</button>
-      <button class="filter-btn" data-filter="issued">Выполнено</button>
+      <button class="filter-btn" data-filter="paid">Выполнено</button>
       <button class="filter-btn" data-filter="rejected">Отклонено</button>
     </div>
 
@@ -370,15 +374,15 @@
   };
 
   const normalizeStatus = (status) => {
-    if (!status || status === 'paid' || status === 'pending') return 'pending';
-    if (status === 'issued' || status === 'done') return 'issued';
+    if (!status || status === 'pending') return 'pending';
+    if (status === 'paid' || status === 'issued' || status === 'done') return 'paid';
     if (status === 'rejected' || status === 'declined') return 'rejected';
     return 'pending';
   };
 
   const statusLabel = (status) => {
     if (status === 'pending') return 'Ожидает';
-    if (status === 'issued') return 'Выполнено';
+    if (status === 'paid') return 'Выполнено';
     if (status === 'rejected') return 'Отклонено';
     return 'Ожидает';
   };
@@ -386,7 +390,7 @@
   const updateCounters = (items) => {
     const total = items.length;
     const pending = items.filter((i) => i.status === 'pending').length;
-    const issued = items.filter((i) => i.status === 'issued').length;
+    const issued = items.filter((i) => i.status === 'paid').length;
     const rejected = items.filter((i) => i.status === 'rejected').length;
     statTotal.textContent = total;
     statPending.textContent = pending;
@@ -406,6 +410,9 @@
     }
     filtered.forEach((p) => {
       const tr = document.createElement('tr');
+      if (p.status === 'paid') {
+        tr.classList.add('row-paid');
+      }
       tr.innerHTML = `
         <td>${p.nick}</td>
         <td>${p.privilege}</td>
@@ -414,34 +421,52 @@
         <td>${formatTime(p.timestamp)}</td>
         <td class="status ${p.status}">${statusLabel(p.status)}</td>
         <td>
-          <button class="action-btn issue" data-id="${p.id}" data-action="issued">✅ Выдать</button>
-          <button class="action-btn reject" data-id="${p.id}" data-action="rejected">❌ Отклонить</button>
+          ${p.status === 'pending'
+            ? `<button class="action-btn issue" data-id="${p.id}" data-action="paid">✅ Подтвердить оплату</button>
+               <button class="action-btn reject" data-id="${p.id}" data-action="rejected">❌ Отклонить</button>`
+            : '-'}
         </td>
       `;
       purchasesBody.appendChild(tr);
     });
   };
 
-  const fetchPurchases = async () => {
+  const subscribePurchases = () => {
     if (!firestoreDb) return;
-    const snapshot = await firestoreDb.collection('purchases')
+    firestoreDb.collection('purchases')
       .orderBy('timestamp', 'desc')
       .limit(300)
-      .get();
-    cachedPurchases = snapshot.docs.map((doc) => {
-      const data = doc.data() || {};
-      return {
-        id: doc.id,
-        nick: data.nick || 'Unknown',
-        privilege: data.privilege || 'VIP',
-        amount: data.amount || 0,
-        paymentMethod: data.paymentMethod || '',
-        timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : null,
-        status: normalizeStatus(data.status)
-      };
-    });
-    updateCounters(cachedPurchases);
-    renderTable();
+      .onSnapshot((snapshot) => {
+        cachedPurchases = snapshot.docs.map((doc) => {
+          const data = doc.data() || {};
+          let ts = data.timestamp;
+          if (ts && typeof ts.toDate === 'function') {
+            ts = ts.toDate();
+          } else if (typeof ts === 'number') {
+            ts = new Date(ts);
+          } else {
+            ts = null;
+          }
+          return {
+            id: doc.id,
+            nick: data.nick || 'Unknown',
+            privilege: data.privilege || 'VIP',
+            amount: data.amount || 0,
+            paymentMethod: data.paymentMethod || '',
+            timestamp: ts,
+            status: normalizeStatus(data.status)
+          };
+        });
+        cachedPurchases.sort((a, b) => {
+          if (a.status === 'pending' && b.status !== 'pending') return -1;
+          if (a.status !== 'pending' && b.status === 'pending') return 1;
+          const aTime = a.timestamp ? a.timestamp.getTime() : 0;
+          const bTime = b.timestamp ? b.timestamp.getTime() : 0;
+          return bTime - aTime;
+        });
+        updateCounters(cachedPurchases);
+        renderTable();
+      });
   };
 
   purchasesBody.addEventListener('click', async (event) => {
@@ -453,7 +478,6 @@
     await firestoreDb.collection('purchases').doc(docId).set({
       status: action
     }, { merge: true });
-    await fetchPurchases();
   });
 
   filterButtons.forEach((btn) => {
@@ -471,8 +495,7 @@
       loginOverlay.style.display = 'none';
       adminLayout.style.display = 'block';
       initFirebase();
-      fetchPurchases();
-      setInterval(fetchPurchases, 15000);
+      subscribePurchases();
     } else {
       loginError.style.display = 'block';
     }
