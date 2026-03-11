@@ -4093,7 +4093,61 @@
       updateKaspiTelegramLink();
     });
   }
+  purchaseNickInput?.addEventListener('input', () => {
+    if (kaspiNickInput) {
+      kaspiNickInput.value = purchaseNickInput.value;
+    }
+    updateKaspiTelegramLink();
+  });
   kaspiCloseBtn.addEventListener('click', closeKaspiModal);
+  kaspiTelegramBtn?.addEventListener('click', async (event) => {
+    event.preventDefault();
+    if (!kaspiTelegramBtn || kaspiTelegramBtn.getAttribute('aria-disabled') === 'true') return;
+
+    if (!firestoreDb) {
+      kaspiQrText.textContent = 'Не настроен Firestore.';
+      return;
+    }
+    if (!selectedProduct) {
+      kaspiQrText.textContent = 'Сначала выберите товар.';
+      return;
+    }
+
+    const nick = (kaspiNickInput?.value || purchaseNickInput?.value || '').trim();
+    if (!nick) {
+      kaspiQrText.textContent = 'Введите ник Minecraft.';
+      return;
+    }
+
+    const privilege = String(selectedProduct.product || '').trim();
+    const amount = Number(selectedProduct.price) || 0;
+    if (!privilege || !Number.isFinite(amount) || amount <= 0) {
+      kaspiQrText.textContent = 'Некорректная сумма или привилегия.';
+      return;
+    }
+
+    // 1) Save purchase request, 2) then open Telegram.
+    kaspiTelegramBtn.setAttribute('aria-disabled', 'true');
+    kaspiQrText.textContent = 'Сохраняем заявку...';
+    try {
+      await firestoreDb.collection('purchases').add({
+        nick,
+        privilege,
+        amount,
+        paymentMethod: 'kaspi',
+        status: 'pending',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      kaspiQrText.textContent = 'Заявка сохранена. Открываем Telegram...';
+      const text = `Оплата ${privilege} ${amount}т | Ник: ${nick}`;
+      const url = `https://t.me/${KASPI_TELEGRAM_USERNAME}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener');
+    } catch (_) {
+      kaspiQrText.textContent = 'Не удалось сохранить заявку.';
+    } finally {
+      updateKaspiTelegramLink();
+    }
+  });
   kaspiModal.addEventListener('click', (event) => {
     if (event.target === kaspiModal) {
       closeKaspiModal();
@@ -4311,40 +4365,88 @@
   }
   if (firestoreDb) {
     let purchasesCache = [];
-    firestoreDb.collection('purchases')
-      .where('status', '==', 'paid')
-      .orderBy('timestamp', 'desc')
-      .limit(10)
-      .onSnapshot((snapshot) => {
-        const newIds = new Set();
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            newIds.add(change.doc.id);
-          }
-        });
-        purchasesCache = snapshot.docs.map((doc) => {
-          const data = doc.data() || {};
-          let ts = data.timestamp;
-          if (ts && typeof ts.toDate === 'function') {
-            ts = ts.toDate();
-          } else if (typeof ts === 'number') {
-            ts = new Date(ts);
-          } else {
-            ts = new Date();
-          }
-          return {
-            id: doc.id,
-            nick: data.nick || 'Unknown',
-            privilege: data.privilege || 'VIP',
-            amount: data.amount || 0,
-            paymentMethod: data.paymentMethod || '',
-            timestamp: ts
-          };
-        });
-        renderPurchases(purchasesCache, newIds);
+    let purchasesLoadedOnce = false;
+    let purchasesUnsub = null;
+
+    const mapSnapshotToPurchases = (snapshot, { filterPaid = false } = {}) => {
+      const newIds = new Set();
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') newIds.add(change.doc.id);
+      });
+      let items = snapshot.docs.map((doc) => {
+        const data = doc.data() || {};
+        let ts = data.timestamp;
+        if (ts && typeof ts.toDate === 'function') {
+          ts = ts.toDate();
+        } else if (typeof ts === 'number') {
+          ts = new Date(ts);
+        } else {
+          ts = null;
+        }
+        return {
+          id: doc.id,
+          nick: data.nick || 'Unknown',
+          privilege: data.privilege || 'VIP',
+          amount: data.amount || 0,
+          paymentMethod: data.paymentMethod || '',
+          status: String(data.status || ''),
+          timestamp: ts
+        };
       });
 
+      if (filterPaid) {
+        items = items.filter((i) => (i.status || '').toLowerCase() === 'paid');
+      }
+
+      items.sort((a, b) => {
+        const aTime = a.timestamp ? a.timestamp.getTime() : 0;
+        const bTime = b.timestamp ? b.timestamp.getTime() : 0;
+        return bTime - aTime;
+      });
+
+      purchasesCache = items.slice(0, 10);
+      purchasesLoadedOnce = true;
+      renderPurchases(purchasesCache, newIds);
+    };
+
+    const subscribePaidPurchases = () => {
+      // Primary query: paid only, newest first, limit 10 (requires composite index in Firestore).
+      return firestoreDb.collection('purchases')
+        .where('status', '==', 'paid')
+        .orderBy('timestamp', 'desc')
+        .limit(10)
+        .onSnapshot((snapshot) => {
+          mapSnapshotToPurchases(snapshot);
+        }, (error) => {
+          // If Firestore complains about missing index, fall back to a broader query and filter client-side.
+          // This still updates in real time via onSnapshot.
+          if (purchasesUnsub) {
+            purchasesUnsub();
+            purchasesUnsub = null;
+          }
+          purchasesLoadedOnce = false;
+          if (recentPurchasesBody) {
+            recentPurchasesBody.innerHTML = `
+              <tr>
+                <td colspan="4" class="time-col">Не удалось загрузить покупки (Firestore индекс). Включаем запасной режим...</td>
+              </tr>
+            `;
+          }
+          purchasesUnsub = firestoreDb.collection('purchases')
+            .orderBy('timestamp', 'desc')
+            .limit(50)
+            .onSnapshot((fallbackSnapshot) => {
+              mapSnapshotToPurchases(fallbackSnapshot, { filterPaid: true });
+            }, () => {
+              // Ignore snapshot errors for now.
+            });
+        });
+    };
+
+    purchasesUnsub = subscribePaidPurchases();
+
     setInterval(() => {
+      if (!purchasesLoadedOnce) return;
       renderPurchases(purchasesCache);
     }, 60000);
   }
