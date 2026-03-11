@@ -518,8 +518,8 @@
     .purchases-table tbody tr:nth-child(5) { animation-delay: 0.50s; }
 
     .avatar-img {
-      width: 52px;
-      height: 52px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: block;
       border: 1px solid rgba(255, 255, 255, 0.35);
@@ -1843,6 +1843,36 @@
       border-color: rgba(150, 236, 165, 0.72);
     }
 
+    .kaspi-telegram-btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-top: 6px;
+      border: 1px solid rgba(130, 223, 146, 0.5);
+      border-radius: 12px;
+      background: rgba(85, 184, 103, 0.42);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .kaspi-telegram-btn:hover {
+      transform: scale(1.04);
+      background: rgba(103, 207, 122, 0.5);
+      border-color: rgba(150, 236, 165, 0.78);
+    }
+
+    .kaspi-telegram-btn[aria-disabled="true"] {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
     .kaspi-qr-wrap {
       margin-top: 14px;
       display: none;
@@ -2298,34 +2328,7 @@
             </thead>
             <tbody id="recentPurchasesBody">
             <tr>
-              <td><img class="avatar-img" src="https://minotar.net/avatar/NightCreeper/32.png" alt="NightCreeper"></td>
-              <td>NightCreeper</td>
-              <td><span class="priv-legend">Legend</span></td>
-              <td class="time-col">только что</td>
-            </tr>
-            <tr>
-              <td><img class="avatar-img" src="https://minotar.net/avatar/AlphaKz/32.png" alt="AlphaKz"></td>
-              <td>AlphaKz</td>
-              <td><span class="priv-premium">Premium</span></td>
-              <td class="time-col">только что</td>
-            </tr>
-            <tr>
-              <td><img class="avatar-img" src="https://minotar.net/avatar/StoneRider/32.png" alt="StoneRider"></td>
-              <td>StoneRider</td>
-              <td><span class="priv-vip">VIP</span></td>
-              <td class="time-col">только что</td>
-            </tr>
-            <tr>
-              <td><img class="avatar-img" src="https://minotar.net/avatar/NeoBuilder/32.png" alt="NeoBuilder"></td>
-              <td>NeoBuilder</td>
-              <td><span class="priv-vip-plus">VIP+</span></td>
-              <td class="time-col">только что</td>
-            </tr>
-            <tr>
-              <td><img class="avatar-img" src="https://minotar.net/avatar/FoxBlade/32.png" alt="FoxBlade"></td>
-              <td>FoxBlade</td>
-              <td><span class="priv-legend">Кейс Легенд</span></td>
-              <td class="time-col">только что</td>
+              <td colspan="4" class="time-col">Загрузка...</td>
             </tr>
             </tbody>
           </table>
@@ -3112,12 +3115,13 @@
     <p class="kaspi-qr-note"><strong>Сумма:</strong> <span id="kaspiAmountText">0т</span></p>
 
     <p class="kaspi-qr-note" id="kaspiQrText">
-      1. Открой Kaspi.kz → Платежи → Перевод по номеру<br>
-      2. Переведи точную сумму<br>
-      3. В комментарии напиши свой ник<br>
-      4. Нажми кнопку ниже
+      1. Переведи 0т на номер выше<br>
+      2. Отправь скриншот квитанции в Telegram<br>
+      3. Укажи свой ник Minecraft
     </p>
-    <button class="payment-close-btn" id="kaspiPaidBtn" type="button">Я оплатил ✅</button>
+    <a class="kaspi-telegram-btn" id="kaspiTelegramBtn" href="https://t.me/ТВОЙ_НИК" target="_blank" rel="noopener noreferrer" aria-disabled="true">
+      <span>Отправить скриншот в Telegram</span>
+    </a>
 
     <div class="payment-actions">
       <button class="payment-close-btn" id="kaspiCloseBtn" type="button">Закрыть</button>
@@ -3213,7 +3217,7 @@
   const kaspiQrText = document.getElementById('kaspiQrText');
   const kaspiAmountText = document.getElementById('kaspiAmountText');
   const kaspiCloseBtn = document.getElementById('kaspiCloseBtn');
-  const kaspiPaidBtn = document.getElementById('kaspiPaidBtn');
+  const kaspiTelegramBtn = document.getElementById('kaspiTelegramBtn');
   const cardModal = document.getElementById('cardModal');
   const cardProductText = document.getElementById('cardProductText');
   const cardCloseBtn = document.getElementById('cardCloseBtn');
@@ -3275,6 +3279,7 @@
   const HEAD_PITCH_BIAS = 0.0;
   const APIPAY_URL = 'https://bpapi.bazarbay.site/api/invoices';
   const APIPAY_API_KEY = window.APIPAY_API_KEY || '';
+  const KASPI_TELEGRAM_USERNAME = 'ТВОЙ_НИК';
   const FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
     apiKey: "AIzaSyDxnC-cXeLppC1e3Hrq4UlFtcmoHGkOMC4",
     authDomain: "flutter-ai-playground-d76ae.firebaseapp.com",
@@ -3337,7 +3342,18 @@
   const privilegeStyles = {
     VIP: 'priv-vip',
     Premium: 'priv-premium',
-    Legend: 'priv-legend'
+    Legend: 'priv-legend',
+    'VIP+': 'priv-vip-plus'
+  };
+
+  const normalizePrivilege = (value) => {
+    const raw = String(value || '').trim();
+    const upper = raw.toUpperCase();
+    if (upper === 'VIP') return 'VIP';
+    if (upper === 'VIP+') return 'VIP+';
+    if (upper === 'PREMIUM') return 'Premium';
+    if (upper === 'LEGEND') return 'Legend';
+    return raw;
   };
 
   const formatRelativeTime = (date) => {
@@ -3374,14 +3390,30 @@
       if (newIds.has(item.id) && index === 0) {
         tr.classList.add('purchase-row-new');
       }
-      const privClass = privilegeStyles[item.privilege] || 'priv-legend';
+      const normalizedPrivilege = normalizePrivilege(item.privilege);
+      const privClass = privilegeStyles[normalizedPrivilege] || 'priv-legend';
       const timeText = formatRelativeTime(item.timestamp);
-      tr.innerHTML = `
-        <td><img class="avatar-img" src="https://minotar.net/avatar/${item.nick}/32.png" alt="${item.nick}"></td>
-        <td>${item.nick}</td>
-        <td><span class="${privClass}">${item.privilege}</span></td>
-        <td class="time-col">${timeText}</td>
-      `;
+      const avatarTd = document.createElement('td');
+      const avatarImg = document.createElement('img');
+      avatarImg.className = 'avatar-img';
+      avatarImg.src = `https://minotar.net/avatar/${encodeURIComponent(item.nick)}/40`;
+      avatarImg.alt = item.nick;
+      avatarTd.appendChild(avatarImg);
+
+      const nickTd = document.createElement('td');
+      nickTd.textContent = item.nick;
+
+      const privTd = document.createElement('td');
+      const privSpan = document.createElement('span');
+      privSpan.className = privClass;
+      privSpan.textContent = normalizedPrivilege || 'VIP';
+      privTd.appendChild(privSpan);
+
+      const timeTd = document.createElement('td');
+      timeTd.className = 'time-col';
+      timeTd.textContent = timeText;
+
+      tr.append(avatarTd, nickTd, privTd, timeTd);
       recentPurchasesBody.appendChild(tr);
     });
   };
@@ -3879,9 +3911,17 @@
       : 'Товар: -';
     const nick = (purchaseNickInput?.value || '').trim();
     if (kaspiNickInput) kaspiNickInput.value = nick;
+    if (kaspiQrText) {
+      const amount = selectedProduct ? `${selectedProduct.price}т` : '0т';
+      kaspiQrText.innerHTML =
+        `1. Переведи ${amount} на номер выше<br>` +
+        `2. Отправь скриншот квитанции в Telegram<br>` +
+        `3. Укажи свой ник Minecraft`;
+    }
     if (kaspiAmountText) {
       kaspiAmountText.textContent = selectedProduct ? `${selectedProduct.price}т` : '0т';
     }
+    updateKaspiTelegramLink();
     kaspiModal.classList.add('open');
     kaspiModal.setAttribute('aria-hidden', 'false');
   };
@@ -4032,46 +4072,28 @@
     }
   });
 
-  if (kaspiNickInput && purchaseNickInput) {
-    kaspiNickInput.addEventListener('input', () => {
-      purchaseNickInput.value = kaspiNickInput.value;
-    });
-  }
-  kaspiCloseBtn.addEventListener('click', closeKaspiModal);
-  kaspiPaidBtn.addEventListener('click', () => {
-    if (!firestoreDb) {
-      kaspiQrText.textContent = 'Не настроен Firestore.';
-      return;
-    }
-    if (!selectedProduct) {
-      kaspiQrText.textContent = 'Сначала выберите товар.';
-      return;
-    }
+  const updateKaspiTelegramLink = () => {
+    if (!kaspiTelegramBtn) return;
     const nick = (kaspiNickInput?.value || purchaseNickInput?.value || '').trim();
-    if (!nick) {
-      kaspiQrText.textContent = 'Введите ник Minecraft для покупки.';
-      return;
-    }
-    const privilege = selectedProduct.product;
-    if (!privilegeStyles[privilege]) {
-      kaspiQrText.textContent = 'Сейчас сохраняются только привилегии VIP/Premium/Legend.';
+    if (!selectedProduct || !nick) {
+      kaspiTelegramBtn.setAttribute('aria-disabled', 'true');
+      kaspiTelegramBtn.href = `https://t.me/${KASPI_TELEGRAM_USERNAME}`;
       return;
     }
     const amount = Number(selectedProduct.price) || 0;
-    kaspiQrText.textContent = 'Сохраняем заявку...';
-    firestoreDb.collection('purchases').add({
-      nick,
-      privilege,
-      amount,
-      paymentMethod: 'kaspi',
-      status: 'pending',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-      kaspiQrText.textContent = 'Заявка принята! Ожидайте подтверждения ⏳';
-    }).catch(() => {
-      kaspiQrText.textContent = 'Не удалось сохранить заявку.';
+    const privilege = String(selectedProduct.product || '').trim() || 'Привилегия';
+    const text = `Оплата ${privilege} ${amount}т | Ник: ${nick}`;
+    kaspiTelegramBtn.href = `https://t.me/${KASPI_TELEGRAM_USERNAME}?text=${encodeURIComponent(text)}`;
+    kaspiTelegramBtn.setAttribute('aria-disabled', 'false');
+  };
+
+  if (kaspiNickInput && purchaseNickInput) {
+    kaspiNickInput.addEventListener('input', () => {
+      purchaseNickInput.value = kaspiNickInput.value;
+      updateKaspiTelegramLink();
     });
-  });
+  }
+  kaspiCloseBtn.addEventListener('click', closeKaspiModal);
   kaspiModal.addEventListener('click', (event) => {
     if (event.target === kaspiModal) {
       closeKaspiModal();
