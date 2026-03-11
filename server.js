@@ -15,7 +15,8 @@ app.use(express.json({
 const CRYPTO_PAY_TOKEN = process.env.CRYPTO_PAY_TOKEN || '';
 const FIREBASE_CONFIG_RAW = process.env.FIREBASE_CONFIG || '';
 const CRYPTO_PAY_API_BASE = 'https://pay.crypt.bot/api';
-const USDT_RATE_KZT = 450;
+// Client prices are RUB-based; with 1 RUB = 5.5 KZT and 1 USDT = 90 RUB => 495 KZT per USDT.
+const USDT_RATE_KZT = 495;
 
 const parseFirebaseConfig = () => {
   if (!FIREBASE_CONFIG_RAW) return null;

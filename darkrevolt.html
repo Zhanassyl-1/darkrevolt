@@ -1513,29 +1513,6 @@
       margin: 0;
     }
 
-    .main-priv-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .main-priv-card {
-      background: linear-gradient(160deg, rgba(8, 16, 28, 0.95), rgba(18, 30, 49, 0.92));
-      border: 1px solid rgba(170, 208, 255, 0.22);
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
-    }
-
-    .main-priv-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 214, 95, 0.55);
-      box-shadow: 0 0 0 1px rgba(255, 214, 95, 0.25), 0 12px 28px rgba(0, 0, 0, 0.45);
-    }
-
     .donate-title {
       font-size: 22px;
       font-weight: 800;
@@ -1681,6 +1658,7 @@
     .kit-atlant { background: linear-gradient(150deg, #634322, #473015); }
     .kit-demon { background: linear-gradient(150deg, #84531f, #5f3b13); }
     .kit-paladin { background: linear-gradient(150deg, #a86c1f, #7f4e12); }
+    .kit-sv { background: linear-gradient(150deg, #c57b20, #944f12); }
 
     .payment-modal,
     .payment-method-modal {
@@ -2099,7 +2077,6 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .main-priv-grid,
       .kits-grid { grid-template-columns: 1fr; }
 
       .modes-grid {
@@ -2418,99 +2395,60 @@
         <h2 class="page-title">Донат</h2>
 
         <section class="donate-section">
-          <h3 class="donate-subtitle">Основные привилегии</h3>
-          <div class="main-priv-grid">
-            <article class="main-priv-card">
-              <div class="donate-head">
-                <span class="donate-icon-badge"><i class="fa-solid fa-star"></i></span>
-                <div class="donate-title">VIP</div>
-              </div>
-              <div class="donate-price">4700₸</div>
-              <ul class="donate-list">
-                <li>+ 2 дома и цветной ник</li>
-                <li>+ /kit vip раз в 24ч</li>
-                <li>+ Префикс в чате</li>
-              </ul>
-              <button class="buy-btn" data-product="VIP" data-price="4700">Купить</button>
-            </article>
-            <article class="main-priv-card">
-              <div class="donate-head">
-                <span class="donate-icon-badge"><img src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/nether_star.png" alt="Иконка Premium"></span>
-                <div class="donate-title">Premium</div>
-              </div>
-              <div class="donate-price">11750₸</div>
-              <ul class="donate-list">
-                <li>+ Все возможности VIP</li>
-                <li>+ /fly в лобби</li>
-                <li>+ Уникальный /kit premium</li>
-              </ul>
-              <button class="buy-btn" data-product="Premium" data-price="11750">Купить</button>
-            </article>
-            <article class="main-priv-card">
-              <div class="donate-head">
-                <span class="donate-icon-badge"><img src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/elytra.png" alt="Иконка Legend"></span>
-                <div class="donate-title">Legend</div>
-              </div>
-              <div class="donate-price">23500₸</div>
-              <ul class="donate-list">
-                <li>+ Все возможности Premium</li>
-                <li>+ Эксклюзивные частицы</li>
-                <li>+ /kit legend и приоритет входа</li>
-              </ul>
-              <button class="buy-btn" data-product="Legend" data-price="23500">Купить</button>
-            </article>
-          </div>
-        </section>
-
-        <section class="donate-section">
           <h3 class="donate-subtitle">Сетка китов</h3>
           <div class="kits-grid">
             <article class="kit-card kit-start" data-kit="start">
               <h4 class="kit-name">Старт</h4>
               <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/wooden_sword.png" alt="Иконка кита Старт"></span>
-              <div class="kit-price">0₸</div>
+              <div class="kit-price">0₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-vip" data-kit="vip">
               <h4 class="kit-name">Вип</h4>
               <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/stone_sword.png" alt="Иконка кита Вип"></span>
-              <div class="kit-price">100₸</div>
+              <div class="kit-price">30₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-lord" data-kit="lord">
               <h4 class="kit-name">Лорд</h4>
               <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/iron_sword.png" alt="Иконка кита Лорд"></span>
-              <div class="kit-price">250₸</div>
+              <div class="kit-price">120₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-master" data-kit="master">
               <h4 class="kit-name">Мастер</h4>
               <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/diamond_sword.png" alt="Иконка кита Мастер"></span>
-              <div class="kit-price">500₸</div>
+              <div class="kit-price">299₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-dragon" data-kit="dragon">
-              <h4 class="kit-name">Драгон</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/netherite_sword.png" alt="Иконка кита Драгон"></span>
-              <div class="kit-price">1000₸</div>
+              <h4 class="kit-name">Дракон</h4>
+              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/netherite_sword.png" alt="Иконка кита Дракон"></span>
+              <div class="kit-price">449₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-atlant" data-kit="atlant">
               <h4 class="kit-name">Атлант</h4>
               <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/trident.png" alt="Иконка кита Атлант"></span>
-              <div class="kit-price">2000₸</div>
+              <div class="kit-price">899₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-demon" data-kit="demon">
               <h4 class="kit-name">Демон</h4>
               <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/fire_charge.png" alt="Иконка кита Демон"></span>
-              <div class="kit-price">3000₸</div>
+              <div class="kit-price">1499₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-paladin" data-kit="paladin">
               <h4 class="kit-name">Паладин</h4>
               <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/golden_apple.png" alt="Иконка кита Паладин"></span>
-              <div class="kit-price">5000₸</div>
+              <div class="kit-price">2999₽</div>
+              <button class="kit-view-btn" type="button">Состав</button>
+            </article>
+            <article class="kit-card kit-sv" data-kit="sv">
+              <h4 class="kit-name">СВ</h4>
+              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/enchanted_golden_apple.png" alt="Иконка кита СВ"></span>
+              <div class="kit-price">4999₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
           </div>
@@ -3112,7 +3050,7 @@
     <input class="kaspi-input" id="kaspiNickInput" type="text" placeholder="Ваш ник">
 
     <p class="kaspi-qr-note"><strong>Номер для перевода:</strong> +7XXXXXXXXXX</p>
-    <p class="kaspi-qr-note"><strong>Сумма:</strong> <span id="kaspiAmountText">0т</span></p>
+    <p class="kaspi-qr-note"><strong>К оплате:</strong> <span id="kaspiAmountText">0т (~0₽)</span></p>
 
     <p class="kaspi-qr-note" id="kaspiQrText">
       1. Переведи 0т на номер выше<br>
@@ -3336,6 +3274,12 @@
       { name: 'Зол. яблоко', count: 12, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/golden_apple.png' },
       { name: 'Алм. шлем', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/diamond_helmet.png' },
       { name: 'Алм. броня', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/diamond_chestplate.png' }
+    ],
+    sv: [
+      { name: 'Нез. меч', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/netherite_sword.png' },
+      { name: 'Тотем', count: 8, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/totem_of_undying.png' },
+      { name: 'Зол. яблоко', count: 32, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/enchanted_golden_apple.png' },
+      { name: 'Нез. слиток', count: 16, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/netherite_ingot.png' }
     ]
   };
 
@@ -3861,10 +3805,20 @@
   profileCloseBtn.addEventListener('click', closeProfile);
 
 
+  const RUB_TO_KZT_RATE = 5.5;
+  const USD_TO_RUB_RATE = 90;
+
+  const rubToKzt = (rub) => Math.round((Number(rub) || 0) * RUB_TO_KZT_RATE);
+  const rubToUsdt = (rub) => {
+    const value = (Number(rub) || 0) / USD_TO_RUB_RATE;
+    return Math.max(0, Math.round(value * 100) / 100);
+  };
+
   const openPaymentModal = (product, price) => {
-    selectedProduct = { product, price };
+    const numericPrice = Number(price) || 0;
+    selectedProduct = { product, price: numericPrice };
     selectedPaymentMethod = '';
-    paymentProduct.textContent = `Товар: ${product} — ${price}₸`;
+    paymentProduct.textContent = `Товар: ${product} — ${numericPrice}₽`;
     if (purchaseNickInput) {
       const nick = currentUserProfile?.minecraftNick || firebaseAuth?.currentUser?.displayName || '';
       if (nick) purchaseNickInput.value = nick;
@@ -3885,9 +3839,13 @@
       cryptobotDetails.style.display = isCryptobot ? 'block' : 'none';
     }
     if (isCryptobot) {
-      methodModalText.textContent = selectedProduct
-        ? `USDT оплата для "${selectedProduct.product}".`
-        : 'USDT оплата.';
+      if (selectedProduct) {
+        const rub = Number(selectedProduct.price) || 0;
+        const usdt = rubToUsdt(rub).toFixed(2);
+        methodModalText.textContent = `К оплате: ${usdt} USDT (~${rub}₽).`;
+      } else {
+        methodModalText.textContent = 'USDT оплата.';
+      }
       if (cryptobotInfoText) {
         cryptobotInfoText.textContent = 'После оплаты привилегия появится автоматически!';
       }
@@ -3906,20 +3864,22 @@
   };
 
   const openKaspiModal = () => {
+    const rub = selectedProduct ? (Number(selectedProduct.price) || 0) : 0;
+    const kzt = rubToKzt(rub);
     kaspiProductText.textContent = selectedProduct
-      ? `Товар: ${selectedProduct.product} — ${selectedProduct.price}₸`
+      ? `Товар: ${selectedProduct.product} — ${rub}₽`
       : 'Товар: -';
     const nick = (purchaseNickInput?.value || '').trim();
     if (kaspiNickInput) kaspiNickInput.value = nick;
     if (kaspiQrText) {
-      const amount = selectedProduct ? `${selectedProduct.price}т` : '0т';
+      const amount = `${kzt}т`;
       kaspiQrText.innerHTML =
         `1. Переведи ${amount} на номер выше<br>` +
         `2. Отправь скриншот квитанции в Telegram<br>` +
         `3. Укажи свой ник Minecraft`;
     }
     if (kaspiAmountText) {
-      kaspiAmountText.textContent = selectedProduct ? `${selectedProduct.price}т` : '0т';
+      kaspiAmountText.textContent = `${kzt}т (~${rub}₽)`;
     }
     updateKaspiTelegramLink();
     kaspiModal.classList.add('open');
@@ -3933,7 +3893,7 @@
 
   const openCardModal = () => {
     cardProductText.textContent = selectedProduct
-      ? `Товар: ${selectedProduct.product} — ${selectedProduct.price}₸`
+      ? `Товар: ${selectedProduct.product} — ${selectedProduct.price}₽`
       : 'Товар: -';
     cardModal.classList.add('open');
     cardModal.setAttribute('aria-hidden', 'false');
@@ -3948,7 +3908,7 @@
     if (!kitCard) return;
     const kitKey = kitCard.dataset.kit || '';
     const kitName = kitCard.querySelector('.kit-name')?.textContent?.trim() || 'Кит';
-    const kitPriceText = kitCard.querySelector('.kit-price')?.textContent?.trim() || '0₸';
+    const kitPriceText = kitCard.querySelector('.kit-price')?.textContent?.trim() || '0₽';
     const numericPrice = Number(kitPriceText.replace(/[^\d]/g, '')) || 0;
     selectedKit = { key: kitKey, name: kitName, price: numericPrice };
 
@@ -4042,12 +4002,15 @@
       methodModalText.textContent = 'Введите ник Minecraft для оплаты.';
       return;
     }
+    const rub = Number(selectedProduct.price) || 0;
+    const usdt = rubToUsdt(rub).toFixed(2);
+    const kztAmount = rubToKzt(rub);
     const payload = {
       nick,
       privilege: selectedProduct.product,
-      amount: Number(selectedProduct.price) || 0
+      amount: kztAmount
     };
-    methodModalText.textContent = 'Создаём инвойс...';
+    methodModalText.textContent = `Создаём инвойс на ${usdt} USDT...`;
     try {
       const response = await fetch('https://darkrevolt-production.up.railway.app/create-invoice', {
         method: 'POST',
@@ -4066,7 +4029,7 @@
           window.open(data.invoiceUrl, '_blank', 'noopener');
         };
       }
-      methodModalText.textContent = 'После оплаты привилегия появится автоматически!';
+      methodModalText.textContent = `Инвойс создан: ${usdt} USDT (~${rub}₽).`;
     } catch (_) {
       methodModalText.textContent = 'Не удалось создать инвойс. Попробуйте позже.';
     }
@@ -4080,7 +4043,8 @@
       kaspiTelegramBtn.href = `https://t.me/${KASPI_TELEGRAM_USERNAME}`;
       return;
     }
-    const amount = Number(selectedProduct.price) || 0;
+    const rub = Number(selectedProduct.price) || 0;
+    const amount = rubToKzt(rub);
     const privilege = String(selectedProduct.product || '').trim() || 'Привилегия';
     const text = `Оплата ${privilege} ${amount}т | Ник: ${nick}`;
     kaspiTelegramBtn.href = `https://t.me/${KASPI_TELEGRAM_USERNAME}?text=${encodeURIComponent(text)}`;
@@ -4120,8 +4084,9 @@
     }
 
     const privilege = String(selectedProduct.product || '').trim();
-    const amount = Number(selectedProduct.price) || 0;
-    if (!privilege || !Number.isFinite(amount) || amount <= 0) {
+    const rub = Number(selectedProduct.price) || 0;
+    const amount = rubToKzt(rub);
+    if (!privilege || !Number.isFinite(amount) || amount < 0) {
       kaspiQrText.textContent = 'Некорректная сумма или привилегия.';
       return;
     }
@@ -4452,7 +4417,7 @@
   }
   initSkinViewer();
   showPage('home');
-  const staggerItems = document.querySelectorAll('.panel, .stat-card, .privilege-item, .news-card, .rule-card, .mode-card, .main-priv-card, .kit-card, .profile-stat-card');
+  const staggerItems = document.querySelectorAll('.panel, .stat-card, .privilege-item, .news-card, .rule-card, .mode-card, .kit-card, .profile-stat-card');
   staggerItems.forEach((item, index) => {
     item.classList.add('stagger-item');
     item.style.animationDelay = `${Math.min(index * 0.06, 0.6)}s`;
