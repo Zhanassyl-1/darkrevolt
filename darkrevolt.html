@@ -575,12 +575,65 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 18px;
-      background: linear-gradient(160deg, rgba(8, 12, 22, 0.86), rgba(6, 10, 16, 0.88));
+      border: 1px solid rgba(155, 129, 255, 0.28);
+      background: rgba(6, 9, 16, 0.76);
       backdrop-filter: blur(7px);
       animation: fadeIn 0.3s ease both;
       overflow: hidden;
+      isolation: isolate;
+    }
+
+    .profile-page-content::after {
+      content: "";
+      position: absolute;
+      inset: -40px;
+      z-index: -2;
+      background:
+        radial-gradient(900px 520px at 18% 18%, rgba(62, 132, 255, 0.22), transparent 60%),
+        radial-gradient(760px 520px at 82% 26%, rgba(168, 85, 247, 0.22), transparent 58%),
+        radial-gradient(880px 620px at 52% 84%, rgba(20, 20, 20, 0.65), transparent 62%),
+        radial-gradient(520px 360px at 68% 66%, rgba(104, 78, 170, 0.22), transparent 62%),
+        radial-gradient(520px 360px at 30% 72%, rgba(36, 99, 235, 0.18), transparent 62%),
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12) 0.6px, transparent 0.7px),
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.10) 0.6px, transparent 0.7px),
+        radial-gradient(circle at 45% 75%, rgba(255, 255, 255, 0.11) 0.6px, transparent 0.7px);
+      background-size:
+        auto,
+        auto,
+        auto,
+        auto,
+        auto,
+        3px 3px,
+        3px 3px,
+        4px 4px;
+      filter: blur(0px) saturate(1.05) contrast(1.05);
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      animation: profileMeshMove 14s ease-in-out infinite;
+    }
+
+    .profile-page-content::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      border-radius: 18px;
+      padding: 1px;
+      background: linear-gradient(90deg, rgba(168, 85, 247, 0.95), rgba(59, 130, 246, 0.95));
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.28), 0 0 20px rgba(59, 130, 246, 0.24);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      opacity: 0.95;
+    }
+
+    @keyframes profileMeshMove {
+      0% { transform: translate3d(-10px, -6px, 0) scale(1.02); filter: blur(0px) saturate(1.05); }
+      50% { transform: translate3d(10px, 8px, 0) scale(1.04); filter: blur(0px) saturate(1.12); }
+      100% { transform: translate3d(-10px, -6px, 0) scale(1.02); filter: blur(0px) saturate(1.05); }
     }
 
     .profile-head-row {
@@ -725,6 +778,25 @@
       opacity: 0;
       transform: translateY(12px);
       transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-stat-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(90deg, rgba(168, 85, 247, 0.95), rgba(59, 130, 246, 0.95));
+      opacity: 0;
+      pointer-events: none;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      transition: opacity 0.25s ease;
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.18), 0 0 18px rgba(59, 130, 246, 0.16);
     }
 
     .profile-page.open .profile-stat-card {
@@ -733,9 +805,16 @@
     }
 
     .profile-stat-card:hover {
-      transform: translateY(-4px) scale(1.03);
-      border-color: rgba(161, 206, 255, 0.52);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.38);
+      transform: translateY(-10px) scale(1.03);
+      border-color: rgba(168, 85, 247, 0.58);
+      box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.42),
+        0 0 0 1px rgba(168, 85, 247, 0.22),
+        0 0 0 1px rgba(59, 130, 246, 0.18);
+    }
+
+    .profile-stat-card:hover::after {
+      opacity: 1;
     }
 
     .profile-stat-head {
@@ -777,12 +856,53 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
+    .progress-track-kdr {
+      height: 10px;
+      border-color: rgba(255, 255, 255, 0.24);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
     .progress-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, rgba(120, 255, 170, 0.9), rgba(140, 120, 255, 0.9));
       box-shadow: 0 0 12px rgba(120, 255, 170, 0.45);
-      transition: width 0.5s ease;
+      transition: width 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: width;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 42%;
+      left: -60%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.24) 48%, transparent 100%);
+      transform: skewX(-18deg);
+      opacity: 0.85;
+      filter: blur(0.2px);
+      animation: shimmerSlide 1.6s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmerSlide {
+      from { left: -60%; }
+      to { left: 120%; }
+    }
+
+    .progress-fill-kdr {
+      background: linear-gradient(90deg, rgba(255, 59, 59, 0.95) 0%, rgba(255, 213, 111, 0.95) 48%, rgba(54, 242, 138, 0.95) 100%);
+      box-shadow:
+        0 0 18px rgba(255, 59, 59, 0.32),
+        0 0 26px rgba(255, 213, 111, 0.26),
+        0 0 34px rgba(54, 242, 138, 0.3);
+    }
+
+    .progress-fill-achievements {
+      background: linear-gradient(90deg, rgba(168, 85, 247, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.26), 0 0 22px rgba(59, 130, 246, 0.22);
     }
 
     .profile-stat-line {
@@ -800,6 +920,18 @@
       font-weight: 900;
       letter-spacing: 0.2px;
       color: #fff;
+    }
+
+    .profile-stat-card:hover .profile-stat-line strong {
+      animation: digitShake 0.55s ease-in-out infinite;
+    }
+
+    @keyframes digitShake {
+      0% { transform: translate3d(0, 0, 0); }
+      25% { transform: translate3d(-0.6px, 0.3px, 0); }
+      50% { transform: translate3d(0.6px, -0.3px, 0); }
+      75% { transform: translate3d(-0.4px, -0.2px, 0); }
+      100% { transform: translate3d(0, 0, 0); }
     }
 
     .profile-kdr-positive {
@@ -843,28 +975,106 @@
       font-weight: 800;
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.24);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+      position: relative;
+      overflow: visible;
+      transform: translateZ(0);
+      isolation: isolate;
+    }
+
+    .profile-purchases-list li::before {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      background-image:
+        radial-gradient(circle at 15% 30%, rgba(var(--sparkle-rgb), 0.95) 0 1px, transparent 2px),
+        radial-gradient(circle at 55% 22%, rgba(var(--sparkle-rgb), 0.9) 0 1px, transparent 2px),
+        radial-gradient(circle at 78% 58%, rgba(var(--sparkle-rgb), 0.9) 0 1px, transparent 2px),
+        radial-gradient(circle at 30% 74%, rgba(var(--sparkle-rgb), 0.85) 0 1px, transparent 2px),
+        radial-gradient(circle at 88% 18%, rgba(var(--sparkle-rgb), 0.85) 0 1px, transparent 2px);
+      background-size: 180px 180px, 210px 210px, 240px 240px, 260px 260px, 220px 220px;
+      mix-blend-mode: screen;
+      opacity: 0.75;
+      filter: blur(0.15px);
+      transform: rotate(8deg);
+      animation: privParticles 2.2s linear infinite;
+      pointer-events: none;
+      -webkit-mask: radial-gradient(circle at 50% 50%, transparent 56%, #000 60%);
+      mask: radial-gradient(circle at 50% 50%, transparent 56%, #000 60%);
+    }
+
+    .profile-purchases-list li::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(90px 70px at 20% 30%, rgba(255, 255, 255, 0.14), transparent 60%),
+        radial-gradient(120px 90px at 70% 75%, rgba(255, 255, 255, 0.1), transparent 60%);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    @keyframes privParticles {
+      0% { transform: translate3d(-14px, -10px, 0) rotate(8deg); opacity: 0.55; }
+      50% { transform: translate3d(16px, 12px, 0) rotate(8deg); opacity: 0.9; }
+      100% { transform: translate3d(-14px, -10px, 0) rotate(8deg); opacity: 0.55; }
     }
 
     .profile-purchases-list li:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+      transform: scale(1.08);
+      filter: brightness(1.08);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
     }
 
     .priv-chip-vip {
+      --sparkle-rgb: 120, 255, 170;
+      --pulse-rgb: 120, 255, 170;
       background: linear-gradient(165deg, rgba(85, 200, 116, 0.28), rgba(35, 113, 59, 0.32));
       color: #a9f8be;
+      box-shadow: 0 0 20px rgba(110, 255, 150, 0.28);
+      animation: privPulse 1.7s ease-in-out infinite;
     }
 
     .priv-chip-premium {
+      --sparkle-rgb: 102, 170, 255;
+      --pulse-rgb: 102, 170, 255;
       background: linear-gradient(165deg, rgba(102, 170, 255, 0.3), rgba(43, 86, 153, 0.34));
       color: #b8dbff;
+      box-shadow: 0 0 20px rgba(102, 170, 255, 0.28);
+      animation: privPulse 1.7s ease-in-out infinite;
     }
 
     .priv-chip-legend {
+      --sparkle-rgb: 255, 214, 95;
+      --pulse-rgb: 255, 214, 95;
       background: linear-gradient(165deg, rgba(255, 210, 110, 0.35), rgba(171, 124, 44, 0.38));
       color: #ffe39a;
+      box-shadow: 0 0 24px rgba(255, 214, 95, 0.24);
+      animation: privPulse 1.7s ease-in-out infinite;
     }
+
+    @keyframes privPulse {
+      0% { box-shadow: 0 0 18px rgba(var(--pulse-rgb), 0.18), 0 0 0 rgba(var(--pulse-rgb), 0); }
+      50% { box-shadow: 0 0 26px rgba(var(--pulse-rgb), 0.32), 0 0 42px rgba(var(--pulse-rgb), 0.12); }
+      100% { box-shadow: 0 0 18px rgba(var(--pulse-rgb), 0.18), 0 0 0 rgba(var(--pulse-rgb), 0); }
+    }
+
+    .priv-crown {
+      display: inline-block;
+      margin-left: 8px;
+      filter: drop-shadow(0 0 10px rgba(255, 214, 95, 0.32));
+      transform-origin: 50% 70%;
+      animation: crownWobble 1.8s ease-in-out infinite;
+    }
+
+    @keyframes crownWobble {
+      0% { transform: rotate(-8deg) translateY(0); }
+      50% { transform: rotate(8deg) translateY(-1px); }
+      100% { transform: rotate(-8deg) translateY(0); }
+    }
+
+    .priv-chip-vip:hover { box-shadow: 0 0 26px rgba(110, 255, 150, 0.34), 0 0 42px rgba(110, 255, 150, 0.18); }
+    .priv-chip-premium:hover { box-shadow: 0 0 26px rgba(102, 170, 255, 0.34), 0 0 42px rgba(102, 170, 255, 0.18); }
+    .priv-chip-legend:hover { box-shadow: 0 0 30px rgba(255, 214, 95, 0.36), 0 0 50px rgba(255, 214, 95, 0.2); }
 
     .profile-footer {
       margin-top: auto;
@@ -1525,8 +1735,7 @@
       margin-bottom: 4px;
     }
 
-    .donate-icon-badge,
-    .kit-icon-wrap {
+    .donate-icon-badge {
       width: 46px;
       height: 46px;
       border-radius: 12px;
@@ -1543,8 +1752,7 @@
       color: #ffd56f;
     }
 
-    .donate-icon-badge img,
-    .kit-icon-wrap img {
+    .donate-icon-badge img {
       width: 26px;
       height: 26px;
       image-rendering: pixelated;
@@ -1625,6 +1833,34 @@
       image-rendering: pixelated;
     }
 
+    .kit-icon-wrap {
+      --kit-accent-rgb: 150, 196, 255;
+      --kit-accent2-rgb: 168, 85, 247;
+      width: 72px;
+      height: 72px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background:
+        radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.24), transparent 46%),
+        radial-gradient(circle at 74% 78%, rgba(0, 0, 0, 0.22), transparent 52%),
+        linear-gradient(160deg, rgba(var(--kit-accent-rgb), 0.55), rgba(var(--kit-accent2-rgb), 0.22));
+      display: grid;
+      place-items: center;
+      box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.38),
+        0 0 18px rgba(var(--kit-accent-rgb), 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      flex: 0 0 72px;
+    }
+
+    .kit-emoji {
+      font-size: 48px;
+      line-height: 1;
+      transform: translateY(1px);
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+      user-select: none;
+    }
+
     .kit-price {
       font-size: 24px;
       font-weight: 800;
@@ -1651,14 +1887,14 @@
     }
 
     .kit-start { background: linear-gradient(150deg, #2a3430, #1d2622); }
-    .kit-vip { background: linear-gradient(150deg, #2c2a32, #1e1b23); }
-    .kit-lord { background: linear-gradient(150deg, #352d2f, #221b1d); }
-    .kit-master { background: linear-gradient(150deg, #41302b, #2d201c); }
-    .kit-dragon { background: linear-gradient(150deg, #4c3525, #372616); }
-    .kit-atlant { background: linear-gradient(150deg, #634322, #473015); }
-    .kit-demon { background: linear-gradient(150deg, #84531f, #5f3b13); }
-    .kit-paladin { background: linear-gradient(150deg, #a86c1f, #7f4e12); }
-    .kit-sv { background: linear-gradient(150deg, #c57b20, #944f12); }
+    .kit-vip { background: linear-gradient(150deg, #2c2a32, #1e1b23); --kit-accent-rgb: 96, 226, 127; --kit-accent2-rgb: 25, 122, 62; }
+    .kit-lord { background: linear-gradient(150deg, #352d2f, #221b1d); --kit-accent-rgb: 255, 214, 95; --kit-accent2-rgb: 171, 124, 44; }
+    .kit-master { background: linear-gradient(150deg, #41302b, #2d201c); --kit-accent-rgb: 255, 155, 90; --kit-accent2-rgb: 255, 213, 102; }
+    .kit-dragon { background: linear-gradient(150deg, #4c3525, #372616); --kit-accent-rgb: 255, 92, 92; --kit-accent2-rgb: 255, 160, 105; }
+    .kit-atlant { background: linear-gradient(150deg, #634322, #473015); --kit-accent-rgb: 86, 219, 212; --kit-accent2-rgb: 104, 163, 255; }
+    .kit-demon { background: linear-gradient(150deg, #84531f, #5f3b13); --kit-accent-rgb: 255, 90, 170; --kit-accent2-rgb: 168, 85, 247; }
+    .kit-paladin { background: linear-gradient(150deg, #a86c1f, #7f4e12); --kit-accent-rgb: 255, 214, 95; --kit-accent2-rgb: 255, 160, 60; }
+    .kit-sv { background: linear-gradient(150deg, #c57b20, #944f12); --kit-accent-rgb: 120, 190, 255; --kit-accent2-rgb: 200, 150, 255; }
 
     .payment-modal,
     .payment-method-modal {
@@ -2203,6 +2439,795 @@
         padding-bottom: 8px;
       }
     }
+
+    /* =========================
+       DarkRevolt 2026 Redesign
+       (Hypixel-like landing)
+       ========================= */
+
+    :root {
+      --dr-bg: #070a0f;
+      --dr-panel: rgba(0, 0, 0, 0.45);
+      --dr-panel-2: rgba(10, 12, 18, 0.6);
+      --dr-border: rgba(255, 255, 255, 0.14);
+      --dr-text: rgba(255, 255, 255, 0.92);
+      --dr-muted: rgba(255, 255, 255, 0.68);
+      --dr-green: #52ff73;
+      --dr-green2: #18b84a;
+      --dr-purple: #a56bff;
+      --dr-purple2: #6f3dff;
+      --dr-shadow: rgba(0, 0, 0, 0.65);
+    }
+
+    .dr-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.22);
+      transition: background 220ms ease, backdrop-filter 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    .dr-topbar.is-scrolled {
+      background: rgba(0, 0, 0, 0.42);
+      border-bottom-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.40);
+    }
+
+    .dr-topbar-inner {
+      width: 100%;
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 0 18px;
+      height: 78px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+    }
+
+    @media (max-width: 980px) {
+      .dr-topbar-inner {
+        height: 72px;
+      }
+    }
+
+    .dr-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .dr-brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Show either the logo image or the text fallback, never both. */
+    .dr-brand-text { display: none; }
+    .dr-brand.no-logo .dr-brand-logo { display: none; }
+    .dr-brand.no-logo .dr-brand-text {
+      display: inline;
+      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(32, 33, 36, 0.92);
+      text-shadow: none;
+      font-size: 14px;
+    }
+
+    .dr-menu {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.26);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
+      justify-self: center;
+    }
+
+    .dr-menu .menu-item {
+      border: 0;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.82);
+      font-weight: 800;
+      padding: 10px 12px;
+      border-radius: 12px;
+      letter-spacing: 0.2px;
+      transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+      cursor: pointer;
+    }
+
+    .dr-menu .menu-item:hover {
+      background: rgba(165, 107, 255, 0.14);
+      color: rgba(255, 255, 255, 0.94);
+      transform: translateY(-1px);
+    }
+
+    .dr-menu .menu-item.active {
+      background: linear-gradient(180deg, rgba(82, 255, 115, 0.20), rgba(0, 0, 0, 0.10));
+      color: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), 0 0 22px rgba(82, 255, 115, 0.10);
+    }
+
+    .dr-auth {
+      display: inline-flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+      min-width: 0;
+      justify-self: end;
+    }
+
+    .dr-profile-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.22);
+      display: inline-grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .dr-profile-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(82, 255, 115, 0.28);
+      background: rgba(0, 0, 0, 0.32);
+    }
+
+    .dr-profile-ic {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .dr-auth-btn {
+      height: 44px;
+      padding: 0 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.22);
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .dr-auth-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(0, 0, 0, 0.32);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    .dr-auth-btn--ghost {
+      border-color: rgba(255, 255, 255, 0.55);
+      background: rgba(0, 0, 0, 0.16);
+      color: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.40);
+    }
+
+    .dr-auth-btn--primary {
+      border-color: rgba(82, 255, 115, 0.40);
+      background: linear-gradient(180deg, rgba(20, 66, 34, 0.95), rgba(0, 0, 0, 0.20));
+      color: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52), 0 0 28px rgba(82, 255, 115, 0.16);
+    }
+
+    .dr-auth-btn--ghost:hover {
+      border-color: rgba(255, 255, 255, 0.70);
+      background: rgba(0, 0, 0, 0.26);
+    }
+
+    .dr-auth-btn--primary:hover {
+      border-color: rgba(82, 255, 115, 0.56);
+      background: linear-gradient(180deg, rgba(26, 92, 48, 0.98), rgba(0, 0, 0, 0.18));
+    }
+
+    .dr-burger {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.22);
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 900;
+      cursor: pointer;
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .dr-menu { display: none; }
+      .dr-burger { display: inline-grid; place-items: center; }
+    }
+
+    @media (max-width: 560px) {
+      .dr-auth { gap: 8px; }
+      .dr-profile-btn { display: none; }
+      .dr-auth-btn {
+        height: 40px;
+        padding: 0 12px;
+        border-radius: 13px;
+        font-size: 13px;
+      }
+      .dr-burger { width: 40px; height: 40px; border-radius: 13px; }
+      .dr-brand-logo { width: 42px; height: 42px; border-radius: 13px; }
+    }
+
+    .dr-mobile-drawer {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 12px;
+      right: 12px;
+      z-index: 999;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.62);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.65);
+      padding: 12px;
+    }
+
+    .dr-mobile-drawer.open { display: block; }
+
+    .dr-mobile-menu {
+      display: grid;
+      gap: 8px;
+    }
+
+    .dr-mobile-menu .menu-item {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.25);
+      color: rgba(255, 255, 255, 0.88);
+      font-weight: 900;
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+
+    .dr-mobile-menu .menu-item.active {
+      border-color: rgba(82, 255, 115, 0.26);
+      background: rgba(82, 255, 115, 0.10);
+    }
+
+    .dr-hero {
+      position: relative;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      min-height: calc(100vh - 78px);
+      border-radius: 0;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-left: 0;
+      border-right: 0;
+      background-image:
+        radial-gradient(circle at 20% 10%, rgba(165, 107, 255, 0.20) 0%, rgba(165, 107, 255, 0) 55%),
+        radial-gradient(circle at 80% 40%, rgba(82, 255, 115, 0.16) 0%, rgba(82, 255, 115, 0) 55%),
+        linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.38)),
+        url("./assets/bg-nether.jpg");
+      background-size: auto, auto, auto, cover;
+      background-position: center, center, center, center;
+      box-shadow: 0 42px 120px rgba(0, 0, 0, 0.75);
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .dr-hero { min-height: calc(100vh - 72px); }
+    }
+
+    .dr-hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.9;
+    }
+
+    .dr-hero-glow {
+      position: absolute;
+      inset: -2px;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.62) 100%);
+      pointer-events: none;
+    }
+
+    .dr-hero-inner {
+      position: relative;
+      z-index: 2;
+      width: min(980px, 92%);
+      margin: 0 auto;
+      padding: 94px 0 74px;
+      text-align: center;
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .dr-hero-inner { padding: 74px 0 64px; }
+    }
+
+    .dr-hero-logo {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      box-shadow: 0 32px 90px rgba(0, 0, 0, 0.68), 0 0 36px rgba(82, 255, 115, 0.10);
+    }
+
+    .dr-hero-title {
+      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
+      font-weight: 900;
+      letter-spacing: 3px;
+      font-size: clamp(44px, 7vw, 78px);
+      line-height: 1;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.96);
+      text-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+    }
+
+    .dr-hero-tagline {
+      font-size: clamp(14px, 2.2vw, 18px);
+      color: rgba(255, 255, 255, 0.76);
+      letter-spacing: 0.3px;
+    }
+
+    .dr-ip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.35);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+    }
+
+    .dr-ip-label { opacity: 0.75; font-weight: 800; }
+
+    .dr-ip-code {
+      font-family: "Press Start 2P", monospace;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.92);
+      letter-spacing: 0.6px;
+    }
+
+    .dr-ip-copy {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(82, 255, 115, 0.30);
+      background: rgba(82, 255, 115, 0.10);
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+
+    .dr-ip-copy:hover { transform: translateY(-1px); background: rgba(82, 255, 115, 0.14); }
+
+    .dr-hero-actions {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .dr-btn {
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.28);
+      color: rgba(255, 255, 255, 0.94);
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+      user-select: none;
+    }
+
+    .dr-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(0, 0, 0, 0.36);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+    }
+
+    .dr-btn--play {
+      min-height: 56px;
+      padding: 0 22px;
+      border-color: rgba(82, 255, 115, 0.40);
+      background: linear-gradient(180deg, rgba(20, 66, 34, 0.95), rgba(0, 0, 0, 0.20));
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55), 0 0 34px rgba(82, 255, 115, 0.15);
+    }
+
+    .dr-btn--donate {
+      border-color: rgba(165, 107, 255, 0.45);
+      background: linear-gradient(180deg, rgba(74, 33, 140, 0.95), rgba(0, 0, 0, 0.20));
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55), 0 0 34px rgba(165, 107, 255, 0.16);
+    }
+
+    .dr-hero-down {
+      position: absolute;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.22);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      animation: drDown 1.8s ease-in-out infinite;
+    }
+
+    @keyframes drDown {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    .dr-hero-down-ic {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .dr-toast {
+      min-height: 0;
+      padding: 0;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      color: rgba(255, 255, 255, 0.82);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .dr-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.28);
+    }
+
+    .dr-section {
+      width: min(1260px, 100%);
+      margin: 0 auto 18px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.30);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dr-section::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(165, 107, 255, 0.10) 0%, rgba(165, 107, 255, 0) 60%),
+        radial-gradient(circle at 80% 70%, rgba(82, 255, 115, 0.10) 0%, rgba(82, 255, 115, 0) 60%);
+      opacity: 0.8;
+    }
+
+    .dr-section > * { position: relative; z-index: 1; }
+
+    .dr-section-head {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .dr-section-title {
+      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    .dr-section-sub {
+      color: rgba(255, 255, 255, 0.70);
+      font-size: 13px;
+    }
+
+    .dr-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .dr-stats-grid { grid-template-columns: 1fr; }
+    }
+
+    .dr-stat-card {
+      padding: 16px 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.26);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .dr-stat-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.20);
+      background: rgba(0, 0, 0, 0.32);
+    }
+
+    .dr-stat-kicker {
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.78);
+      letter-spacing: 0.2px;
+      margin-bottom: 8px;
+    }
+
+    .dr-stat-value {
+      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
+      font-weight: 900;
+      font-size: 32px;
+      letter-spacing: 0.6px;
+      color: rgba(255, 255, 255, 0.96);
+      text-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .dr-stat-suffix { opacity: 0.8; font-size: 18px; }
+
+    .dr-features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 1100px) {
+      .dr-features-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .dr-features-grid { grid-template-columns: 1fr; }
+    }
+
+    .dr-feature-card {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.24);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dr-feature-card::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(120deg, rgba(82, 255, 115, 0.14), rgba(165, 107, 255, 0.14));
+      opacity: 0;
+      transition: opacity 180ms ease;
+      pointer-events: none;
+      mask-image: radial-gradient(circle at 20% 20%, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%);
+      -webkit-mask-image: radial-gradient(circle at 20% 20%, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%);
+    }
+
+    .dr-feature-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.20);
+      background: rgba(0, 0, 0, 0.30);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    .dr-feature-card:hover::after { opacity: 1; }
+
+    .dr-feature-ic { font-size: 22px; margin-bottom: 10px; }
+    .dr-feature-title {
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .dr-feature-text { color: rgba(255, 255, 255, 0.70); font-size: 13px; line-height: 1.5; }
+
+    .dr-purchases-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 1200px) {
+      .dr-purchases-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 860px) {
+      .dr-purchases-grid { grid-template-columns: 1fr; }
+    }
+
+    .dr-purchase-card {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.24);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.20);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .dr-purchase-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.20);
+      background: rgba(0, 0, 0, 0.30);
+    }
+
+    .dr-purchase-card.is-new {
+      border-color: rgba(82, 255, 115, 0.26);
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55), 0 0 26px rgba(82, 255, 115, 0.10);
+    }
+
+    .dr-purchase-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      outline: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .dr-purchase-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .dr-purchase-nick {
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      color: rgba(255, 255, 255, 0.92);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dr-purchase-time {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.62);
+      white-space: nowrap;
+    }
+
+    .dr-purchase-priv {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dr-purchase-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.62);
+    }
+
+    .dr-purchase-empty {
+      grid-column: 1 / -1;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255, 255, 255, 0.16);
+      background: rgba(0, 0, 0, 0.18);
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .dr-footer {
+      width: min(1260px, 100%);
+      margin: 0 auto 26px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0, 0, 0, 0.30);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.45);
+    }
+
+    .dr-footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .dr-footer-brand {
+      display: inline-flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .dr-footer-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+    }
+
+    .dr-footer-name {
+      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .dr-footer-copy { color: rgba(255, 255, 255, 0.62); font-size: 12px; }
+
+    .dr-footer-links {
+      display: inline-flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .dr-footer-link {
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.22);
+      color: rgba(255, 255, 255, 0.84);
+      font-weight: 900;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .dr-footer-link:hover {
+      transform: translateY(-1px);
+      border-color: rgba(165, 107, 255, 0.26);
+      background: rgba(165, 107, 255, 0.10);
+    }
+
+    /* Reveal on scroll (progressive enhancement: only hide after JS marks ready). */
+    [data-reveal] { opacity: 1; transform: none; }
+
+    body.reveal-ready [data-reveal] {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 520ms ease, transform 520ms ease;
+      will-change: opacity, transform;
+    }
+
+    body.reveal-ready [data-reveal].is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dr-hero-down { animation: none; }
+      [data-reveal] { opacity: 1; transform: none; transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -2212,32 +3237,76 @@
 <div class="pixel-dust"></div>
 <div class="noise"></div>
 
-<header class="site-header">
-  <h1 class="site-title">
-    <img class="site-title-image" src="./assets/logo.png" alt="DarkRevolt">
-  </h1>
-</header>
+<header class="dr-topbar" id="drTopbar">
+  <div class="dr-topbar-inner">
+    <a class="dr-brand" href="./darkrevolt.html" aria-label="DarkRevolt">
+      <img class="dr-brand-logo" src="./assets/logo.png" alt="DarkRevolt">
+    </a>
 
-<div class="top-nav-shell">
-  <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">☰</button>
-  <nav class="left-col" id="leftCol" aria-label="Навигация">
-    <div class="side-nav">
-      <button class="profile-btn" id="profileBtn" aria-label="Профиль">👤</button>
-      <button class="menu-item" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i><span id="loginBtnText">Войти / Регистрация</span></button>
-      <button class="menu-item active" data-page="home"><i class="fa-solid fa-house"></i><span>Главная</span></button>
-      <button class="menu-item" data-page="gamemodes"><i class="fa-solid fa-sword"></i><span>Режимы игры</span></button>
-      <button class="menu-item" data-page="donate"><i class="fa-solid fa-coins"></i><span>Донат</span></button>
-      <button class="menu-item" data-page="news"><i class="fa-solid fa-newspaper"></i><span>Новости</span></button>
-      <button class="menu-item" data-page="top"><i class="fa-solid fa-trophy"></i><span>Топ игроков</span></button>
-      <button class="menu-item" data-page="rules"><i class="fa-solid fa-book-open"></i><span>Правила</span></button>
+    <nav class="dr-menu" aria-label="Разделы">
+      <button class="menu-item active" type="button" data-page="home">Главная</button>
+      <button class="menu-item" type="button" data-page="gamemodes">Режимы</button>
+      <button class="menu-item" type="button" data-page="donate">Донат</button>
+      <button class="menu-item" type="button" data-page="news">Новости</button>
+      <button class="menu-item" type="button" data-page="top">Топ</button>
+      <button class="menu-item" type="button" data-page="rules">Правила</button>
+    </nav>
+
+    <div class="dr-auth" aria-label="Аккаунт">
+      <button class="profile-btn dr-profile-btn" id="profileBtn" type="button" aria-label="Профиль">
+        <span class="dr-profile-ic" aria-hidden="true">👤</span>
+      </button>
+      <button class="dr-auth-btn dr-auth-btn--ghost" id="loginBtn" type="button">
+        <span id="loginBtnText">Войти</span>
+      </button>
+      <button class="dr-auth-btn dr-auth-btn--primary" id="registerBtn" type="button">Регистрация</button>
+      <button class="menu-toggle dr-burger" id="menuToggle" type="button" aria-label="Открыть меню">☰</button>
+    </div>
+  </div>
+
+  <nav class="left-col dr-mobile-drawer" id="leftCol" aria-label="Навигация (мобильная)">
+    <div class="dr-mobile-menu">
+      <button class="menu-item active" type="button" data-page="home">Главная</button>
+      <button class="menu-item" type="button" data-page="gamemodes">Режимы</button>
+      <button class="menu-item" type="button" data-page="donate">Донат</button>
+      <button class="menu-item" type="button" data-page="news">Новости</button>
+      <button class="menu-item" type="button" data-page="top">Топ</button>
+      <button class="menu-item" type="button" data-page="rules">Правила</button>
     </div>
   </nav>
-</div>
+</header>
 
 <div class="layout">
   <main class="right-col">
     <section class="page-section active" data-page-section="home">
-      <section class="panel" aria-label="Статистика сервера">
+      <section class="dr-hero" id="homeHero" aria-label="Главная">
+        <canvas class="dr-hero-canvas" id="heroParticles" aria-hidden="true"></canvas>
+        <div class="dr-hero-glow" aria-hidden="true"></div>
+
+        <div class="dr-hero-inner" data-reveal>
+          <h1 class="dr-hero-title">DARKREVOLT</h1>
+          <p class="dr-hero-tagline">Лучший Minecraft сервер СНГ</p>
+
+          <div class="dr-ip" role="group" aria-label="IP сервера">
+            <span class="dr-ip-label">IP:</span>
+            <code class="dr-ip-code" id="serverIp">play.darkrevolt.net</code>
+            <button class="dr-ip-copy" id="copyIpBtn" type="button">Копировать</button>
+          </div>
+
+          <div class="dr-hero-actions">
+            <button class="dr-btn dr-btn--play" id="playBtn" type="button">🎮 Начать играть</button>
+            <button class="dr-btn dr-btn--donate" id="donateBtn" type="button">💎 Донат</button>
+          </div>
+
+          <div class="dr-toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+        </div>
+
+        <button class="dr-hero-down" id="heroDown" type="button" aria-label="Прокрутить вниз">
+          <span class="dr-hero-down-ic" aria-hidden="true">↓</span>
+        </button>
+      </section>
+
+      <section class="panel" id="homeLegacyStats" aria-label="Статистика сервера">
         <div class="stats-grid">
           <article class="stat-card">
             <div class="stat-head">
@@ -2311,6 +3380,23 @@
           </table>
         </div>
       </section>
+
+      <footer class="dr-footer" aria-label="Подвал" data-reveal>
+        <div class="dr-footer-inner">
+          <div class="dr-footer-brand">
+            <img class="dr-footer-logo" src="./assets/logo.png" alt="DarkRevolt">
+            <div>
+              <div class="dr-footer-name">DARKREVOLT</div>
+              <div class="dr-footer-copy">Copyright DarkRevolt 2026</div>
+            </div>
+          </div>
+          <nav class="dr-footer-links" aria-label="Ссылки">
+            <a class="dr-footer-link" href="#" rel="noopener noreferrer">Discord</a>
+            <a class="dr-footer-link" href="#" rel="noopener noreferrer">Telegram</a>
+            <a class="dr-footer-link" href="#" rel="noopener noreferrer">VK</a>
+          </nav>
+        </div>
+      </footer>
     </section>
 
     <section class="page-section" data-page-section="gamemodes">
@@ -2397,57 +3483,51 @@
         <section class="donate-section">
           <h3 class="donate-subtitle">Сетка китов</h3>
           <div class="kits-grid">
-            <article class="kit-card kit-start" data-kit="start">
-              <h4 class="kit-name">Старт</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/wooden_sword.png" alt="Иконка кита Старт"></span>
-              <div class="kit-price">0₽</div>
-              <button class="kit-view-btn" type="button">Состав</button>
-            </article>
             <article class="kit-card kit-vip" data-kit="vip">
               <h4 class="kit-name">Вип</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/stone_sword.png" alt="Иконка кита Вип"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">⭐</span></span>
               <div class="kit-price">30₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-lord" data-kit="lord">
               <h4 class="kit-name">Лорд</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/iron_sword.png" alt="Иконка кита Лорд"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">👑</span></span>
               <div class="kit-price">120₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-master" data-kit="master">
               <h4 class="kit-name">Мастер</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/diamond_sword.png" alt="Иконка кита Мастер"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">🔥</span></span>
               <div class="kit-price">299₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-dragon" data-kit="dragon">
               <h4 class="kit-name">Драгон</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/netherite_sword.png" alt="Иконка кита Драгон"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">🐉</span></span>
               <div class="kit-price">449₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-atlant" data-kit="atlant">
               <h4 class="kit-name">Атлант</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/trident.png" alt="Иконка кита Атлант"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">🌊</span></span>
               <div class="kit-price">899₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-demon" data-kit="demon">
               <h4 class="kit-name">Демон</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/fire_charge.png" alt="Иконка кита Демон"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">😈</span></span>
               <div class="kit-price">1499₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-paladin" data-kit="paladin">
               <h4 class="kit-name">Паладин</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/golden_apple.png" alt="Иконка кита Паладин"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">🛡️</span></span>
               <div class="kit-price">2999₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
             <article class="kit-card kit-sv" data-kit="sv">
               <h4 class="kit-name">СВ</h4>
-              <span class="kit-icon-wrap"><img class="kit-icon" src="https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/enchanted_golden_apple.png" alt="Иконка кита СВ"></span>
+              <span class="kit-icon-wrap" aria-hidden="true"><span class="kit-emoji">💎</span></span>
               <div class="kit-price">4999₽</div>
               <button class="kit-view-btn" type="button">Состав</button>
             </article>
@@ -2890,8 +3970,8 @@
               <div class="profile-stat-line"><span>Убийств</span><strong data-profile-counter data-format="int" data-target="1247">1,247</strong></div>
               <div class="profile-stat-line"><span>Смертей</span><strong data-profile-counter data-format="int" data-target="843">843</strong></div>
               <div class="profile-stat-line"><span>KDR</span><strong id="profileKdrValue" data-profile-counter data-format="float2" data-target="1.48">1.48</strong></div>
-              <div class="progress-track">
-                <div class="progress-fill" data-progress-target="1.48" data-progress-max="3"></div>
+              <div class="progress-track progress-track-kdr">
+                <div class="progress-fill progress-fill-kdr" data-progress-target="1.48" data-progress-max="3"></div>
               </div>
             </div>
           </article>
@@ -2928,7 +4008,7 @@
               <div class="profile-stat-line"><span>Открыто ачивок</span><strong data-profile-counter data-format="fraction" data-target="34" data-total="100">34/100</strong></div>
               <div class="profile-stat-line"><span>Редких</span><strong data-profile-counter data-format="int" data-target="12">12</strong></div>
               <div class="progress-track">
-                <div class="progress-fill" data-progress-target="34" data-progress-max="100"></div>
+                <div class="progress-fill progress-fill-achievements" data-progress-target="34" data-progress-max="100"></div>
               </div>
             </div>
           </article>
@@ -2939,7 +4019,7 @@
           <ul class="profile-purchases-list">
             <li class="priv-chip-vip">VIP (12.01.2026)</li>
             <li class="priv-chip-premium">Premium (23.02.2026)</li>
-            <li class="priv-chip-legend">Legend (01.03.2026)</li>
+            <li class="priv-chip-legend">Legend (01.03.2026) <span class="priv-crown" aria-hidden="true">👑</span></li>
           </ul>
         </section>
       </div>
@@ -3170,6 +4250,7 @@
   const leftCol = document.getElementById('leftCol');
   const parallaxBack = document.getElementById('parallaxBack');
   const parallaxFront = document.getElementById('parallaxFront');
+  const topbar = document.getElementById('drTopbar');
   const authModal = document.getElementById('authModal');
   const authCloseBtn = document.getElementById('authCloseBtn');
   const authStatus = document.getElementById('authStatus');
@@ -3183,6 +4264,16 @@
   const registerEmailInput = document.getElementById('registerEmailInput');
   const registerPasswordInput = document.getElementById('registerPasswordInput');
   const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+  const registerNavBtn = document.getElementById('registerBtn');
+
+  const heroCanvas = document.getElementById('heroParticles');
+  const copyIpBtn = document.getElementById('copyIpBtn');
+  const serverIp = document.getElementById('serverIp');
+  const toast = document.getElementById('toast');
+  const heroDown = document.getElementById('heroDown');
+  const playBtn = document.getElementById('playBtn');
+  const donateBtn = document.getElementById('donateBtn');
+  const homeStats = document.getElementById('homeLegacyStats');
 
   let mouseX = 0;
   let mouseY = 0;
@@ -3227,12 +4318,6 @@
     appId: "1:830387927304:web:5dbae493653b61c29b94bd"
   };
   const kitCompositions = {
-    start: [
-      { name: 'Дер. меч', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/wooden_sword.png' },
-      { name: 'Дер. кирка', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/wooden_pickaxe.png' },
-      { name: 'Дер. топор', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/wooden_axe.png' },
-      { name: 'Хлеб', count: 32, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/bread.png' }
-    ],
     vip: [
       { name: 'Кам. меч', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/stone_sword.png' },
       { name: 'Кам. кирка', count: 1, icon: 'https://mcasset.cloud/1.20.1/assets/minecraft/textures/item/stone_pickaxe.png' },
@@ -3440,13 +4525,15 @@
       if (loginBtnText) {
         loginBtnText.textContent = nick || 'Аккаунт';
       }
+      if (registerNavBtn) registerNavBtn.style.display = 'none';
       if (logoutBtn) logoutBtn.style.display = 'inline-flex';
       if (purchaseNickInput && nick) purchaseNickInput.value = nick;
     } else {
       setAuthStatus('Войдите или зарегистрируйтесь, чтобы сохранить ник Minecraft.');
       if (loginBtnText) {
-        loginBtnText.textContent = 'Войти / Регистрация';
+        loginBtnText.textContent = 'Войти';
       }
+      if (registerNavBtn) registerNavBtn.style.display = 'inline-flex';
       if (logoutBtn) logoutBtn.style.display = 'none';
     }
   };
@@ -3458,6 +4545,207 @@
       section.classList.toggle('active', isTarget);
     });
     setActiveMenu(page);
+  };
+
+  // Enable direct links like `darkrevolt.html#donate` from 404 page or external refs.
+  const KNOWN_PAGES = new Set(['home', 'gamemodes', 'donate', 'news', 'top', 'rules', 'mode-skywars']);
+  const getHashPage = () => {
+    const raw = (window.location.hash || '').replace(/^#/, '').trim();
+    return KNOWN_PAGES.has(raw) ? raw : '';
+  };
+  const applyHashPage = ({ smooth = false } = {}) => {
+    const page = getHashPage();
+    if (!page) return;
+    showPage(page);
+    window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+  };
+  applyHashPage();
+  window.addEventListener('hashchange', () => applyHashPage({ smooth: true }));
+
+  const showToast = (message) => {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    window.clearTimeout(showToast._t);
+    showToast._t = window.setTimeout(() => {
+      toast.classList.remove('show');
+    }, 1400);
+  };
+
+  const copyText = async (text) => {
+    const value = String(text || '').trim();
+    if (!value) return false;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return true;
+      }
+    } catch (_) {
+      // Fallback below.
+    }
+    try {
+      const el = document.createElement('textarea');
+      el.value = value;
+      el.setAttribute('readonly', 'true');
+      el.style.position = 'fixed';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(el);
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const copyServerIp = async () => {
+    const ip = serverIp?.textContent || '';
+    const ok = await copyText(ip);
+    showToast(ok ? 'IP скопирован' : 'Не удалось скопировать');
+    return ok;
+  };
+
+  const initTopbarBlur = () => {
+    if (!topbar) return;
+    const tick = () => {
+      topbar.classList.toggle('is-scrolled', window.scrollY > 8);
+    };
+    tick();
+    window.addEventListener('scroll', tick, { passive: true });
+  };
+
+  const animateCount = (el) => {
+    const rawTarget = Number(el.dataset.count || 0) || 0;
+    const duration = Math.max(250, Number(el.dataset.duration || 900) || 900);
+    const start = performance.now();
+    const from = Number(el.textContent.replace(/[^\d.-]/g, '')) || 0;
+    const fmt = (v) => Math.round(v).toLocaleString('en-US');
+
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = fmt(from + (rawTarget - from) * eased);
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  const initRevealOnScroll = () => {
+    const els = Array.from(document.querySelectorAll('[data-reveal]'));
+    if (!els.length) return;
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      els.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+
+    document.body.classList.add('reveal-ready');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        el.classList.add('is-visible');
+        el.querySelectorAll('[data-count]').forEach((n) => {
+          if (n.dataset.animated === '1') return;
+          n.dataset.animated = '1';
+          animateCount(n);
+        });
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.18 });
+
+    els.forEach((el) => observer.observe(el));
+  };
+
+  const initHeroParticles = () => {
+    if (!heroCanvas) return;
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const ctx = heroCanvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let raf = 0;
+    let particles = [];
+
+    const resize = () => {
+      const rect = heroCanvas.getBoundingClientRect();
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      w = Math.max(1, Math.floor(rect.width));
+      h = Math.max(1, Math.floor(rect.height));
+      heroCanvas.width = Math.floor(w * dpr);
+      heroCanvas.height = Math.floor(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const count = Math.max(70, Math.min(150, Math.floor((w * h) / 12000)));
+      particles = Array.from({ length: count }, () => {
+        const speed = 0.18 + Math.random() * 0.55;
+        const angle = Math.random() * Math.PI * 2;
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          r: 0.8 + Math.random() * 1.8,
+          hue: Math.random() < 0.55 ? 132 : 268,
+          a: 0.18 + Math.random() * 0.32
+        };
+      });
+    };
+
+    const draw = () => {
+      raf = requestAnimationFrame(draw);
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'lighter';
+
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -10) p.x = w + 10;
+        if (p.x > w + 10) p.x = -10;
+        if (p.y < -10) p.y = h + 10;
+        if (p.y > h + 10) p.y = -10;
+
+        ctx.fillStyle = `hsla(${p.hue}, 90%, 60%, ${p.a})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Thin connection lines.
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < i + 10 && j < particles.length; j++) {
+          const a = particles[i];
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > 120) continue;
+          const alpha = (1 - dist / 120) * 0.10;
+          ctx.strokeStyle = `rgba(200, 255, 220, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+
+      ctx.globalCompositeOperation = 'source-over';
+    };
+
+    resize();
+    window.addEventListener('resize', () => {
+      window.cancelAnimationFrame(raf);
+      resize();
+      draw();
+    }, { passive: true });
+    draw();
   };
 
   const closeProfile = () => {
@@ -3488,44 +4776,50 @@
       const target = Number(bar.dataset.progressTarget || 0);
       const max = Number(bar.dataset.progressMax || 1) || 1;
       const pct = Math.max(0, Math.min(1, target / max)) * 100;
-      bar.style.width = `${pct.toFixed(1)}%`;
+      // Retrigger fill animation on each modal open.
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      bar.offsetWidth; // force reflow
+      bar.style.transition = '';
+      requestAnimationFrame(() => {
+        bar.style.width = `${pct.toFixed(1)}%`;
+      });
     });
   };
 
   const animateProfileCounters = () => {
     if (profileCountersAnimated) return;
     profileCountersAnimated = true;
-
-    profileCounters.forEach((counter, index) => {
+    const duration = 1500;
+    const items = Array.from(profileCounters).map((counter) => {
       const target = Number(counter.dataset.target || 0);
       const total = Number(counter.dataset.total || 100);
       const format = counter.dataset.format || 'int';
-      const delay = index * 120;
-      const duration = 1100 + (index * 80);
-
       counter.textContent = formatProfileCounterValue(0, format, total);
+      return { counter, target, total, format };
+    });
 
-      const start = performance.now() + delay;
-      const step = (now) => {
-        if (now < start) {
-          requestAnimationFrame(step);
-          return;
-        }
-        const progress = Math.min(1, (now - start) / duration);
-        const eased = 1 - ((1 - progress) ** 3);
+    const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5);
+    const start = performance.now();
+
+    const tick = (now) => {
+      const progress = Math.min(1, Math.max(0, (now - start) / duration));
+      const eased = easeOutQuint(progress);
+      items.forEach(({ counter, target, total, format }) => {
         const currentValue = target * eased;
         counter.textContent = formatProfileCounterValue(currentValue, format, total);
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          counter.textContent = formatProfileCounterValue(target, format, total);
-          if (format === 'float2') {
-            updateProfileKdrTone();
-          }
-        }
-      };
-      requestAnimationFrame(step);
-    });
+      });
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+        return;
+      }
+      items.forEach(({ counter, target, total, format }) => {
+        counter.textContent = formatProfileCounterValue(target, format, total);
+      });
+      updateProfileKdrTone();
+    };
+
+    requestAnimationFrame(tick);
   };
 
   const detectSkinModel = (skinUrl) => new Promise((resolve) => {
@@ -3728,6 +5022,29 @@
 
   loginBtn?.addEventListener('click', () => {
     openAuthModal();
+    setAuthTab('login');
+  });
+
+  registerNavBtn?.addEventListener('click', () => {
+    openAuthModal();
+    setAuthTab('register');
+  });
+
+  copyIpBtn?.addEventListener('click', copyServerIp);
+
+  playBtn?.addEventListener('click', async () => {
+    await copyServerIp();
+    showPage('gamemodes');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  donateBtn?.addEventListener('click', () => {
+    showPage('donate');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  heroDown?.addEventListener('click', () => {
+    homeStats?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   authCloseBtn?.addEventListener('click', closeAuthModal);
@@ -4415,13 +5732,14 @@
       renderPurchases(purchasesCache);
     }, 60000);
   }
+
+  initTopbarBlur();
+  initHeroParticles();
+  initRevealOnScroll();
+
   initSkinViewer();
-  showPage('home');
-  const staggerItems = document.querySelectorAll('.panel, .stat-card, .privilege-item, .news-card, .rule-card, .mode-card, .kit-card, .profile-stat-card');
-  staggerItems.forEach((item, index) => {
-    item.classList.add('stagger-item');
-    item.style.animationDelay = `${Math.min(index * 0.06, 0.6)}s`;
-  });
+  const initialPage = getHashPage();
+  showPage(initialPage || 'home');
   animateParallax();
 </script>
 </body>

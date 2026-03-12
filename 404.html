@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 | DarkRevolt</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --text: #ffffff;
+      --line: rgba(255, 255, 255, 0.35);
+      --panel-bg: rgba(0, 0, 0, 0.55);
+      --panel-border: rgba(255, 255, 255, 0.2);
+      --green: #52ff73;
+      --green2: #18b84a;
+      --shadow: rgba(0, 0, 0, 0.65);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      overflow: hidden;
+      position: relative;
+      background: #0a0f0f;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M6 26 L12 20 L6 14 L10 10 L16 16 L20 12 L26 18 L18 26 Z' fill='%23cfe7ff' stroke='%235b3dff' stroke-width='2'/></svg>") 0 20, auto;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .parallax-layer {
+      position: fixed;
+      inset: -30px;
+      pointer-events: none;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      transform: translate(0, 0);
+      will-change: transform;
+    }
+    .parallax-back {
+      z-index: -6;
+      background-image: url("./assets/bg-nether.jpg");
+      filter: saturate(0.95) brightness(0.92);
+    }
+    .parallax-front {
+      z-index: -5;
+      background-image: url("./assets/bg-nether.jpg");
+      opacity: 0.42;
+      filter: contrast(1.06) brightness(0.72);
+      mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.92) 40%, rgba(0, 0, 0, 0) 88%);
+      -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.92) 40%, rgba(0, 0, 0, 0) 88%);
+    }
+    .bg-dim {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: rgba(0, 0, 0, 0.56);
+      pointer-events: none;
+    }
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.7) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px);
+      background-size: 3px 3px, 4px 4px, 5px 5px;
+    }
+    .pixel-dust {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(120, 190, 255, 0.45) 1px, transparent 1.2px),
+        radial-gradient(circle at 70% 30%, rgba(110, 255, 170, 0.35) 1px, transparent 1.2px),
+        radial-gradient(circle at 40% 80%, rgba(180, 140, 255, 0.35) 1px, transparent 1.2px);
+      background-size: 140px 140px, 180px 180px, 220px 220px;
+      animation: pixelFloat 18s linear infinite;
+      opacity: 0.3;
+    }
+
+    @keyframes pixelFloat {
+      from { background-position: 0 0, 0 0, 0 0; }
+      to { background-position: 140px 180px, -180px 160px, 220px -200px; }
+    }
+
+    .falling {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      overflow: hidden;
+      mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 35%, rgba(0, 0, 0, 0) 70%);
+      -webkit-mask-image: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 35%, rgba(0, 0, 0, 0) 70%);
+    }
+
+    .block {
+      position: absolute;
+      top: -15vh;
+      left: 0;
+      width: var(--size, 32px);
+      height: var(--size, 32px);
+      opacity: 0.92;
+      image-rendering: pixelated;
+      transform: translate3d(calc(var(--x, 50) * 1vw), 0, 0) rotate(var(--rot, 0deg));
+      filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
+      animation: fall var(--dur, 10s) linear infinite;
+      animation-delay: var(--delay, 0s);
+      border-radius: 3px;
+      outline: 1px solid rgba(255, 255, 255, 0.08);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      will-change: transform, opacity;
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0;
+        transform: translate3d(calc(var(--x, 50) * 1vw), -12vh, 0) rotate(var(--rot, 0deg));
+      }
+      10% { opacity: 0.92; }
+      100% {
+        opacity: 0;
+        transform: translate3d(calc(var(--x, 50) * 1vw + var(--drift, 0px)), 115vh, 0) rotate(calc(var(--rot, 0deg) + 120deg));
+      }
+    }
+
+    /* Pixel blocks as crisp SVG tiles. */
+    .block--grass {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%238a5a2b'/><rect y='0' width='16' height='5' fill='%2339b84a'/><rect y='5' width='16' height='2' fill='%232c8a37'/><rect x='2' y='2' width='2' height='1' fill='%2356ff7a'/><rect x='9' y='1' width='3' height='1' fill='%2356ff7a'/><rect x='1' y='9' width='3' height='2' fill='%23774725'/><rect x='7' y='11' width='3' height='2' fill='%23774725'/><rect x='12' y='8' width='2' height='2' fill='%23774725'/></svg>");
+    }
+    .block--dirt {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%238a5a2b'/><rect x='1' y='3' width='3' height='2' fill='%23774725'/><rect x='6' y='2' width='2' height='2' fill='%23774725'/><rect x='11' y='4' width='3' height='2' fill='%23774725'/><rect x='3' y='10' width='2' height='2' fill='%23774725'/><rect x='8' y='9' width='4' height='3' fill='%23774725'/><rect x='13' y='12' width='2' height='2' fill='%23774725'/><rect x='2' y='6' width='1' height='1' fill='%23a56d35'/><rect x='9' y='6' width='1' height='1' fill='%23a56d35'/><rect x='5' y='13' width='1' height='1' fill='%23a56d35'/></svg>");
+    }
+    .block--stone {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%23777777'/><rect x='2' y='2' width='4' height='3' fill='%23666666'/><rect x='8' y='1' width='3' height='3' fill='%23888888'/><rect x='12' y='4' width='3' height='2' fill='%23666666'/><rect x='1' y='9' width='3' height='3' fill='%23888888'/><rect x='6' y='8' width='4' height='4' fill='%23666666'/><rect x='11' y='10' width='4' height='3' fill='%23888888'/><rect x='4' y='13' width='3' height='2' fill='%23666666'/></svg>");
+    }
+    .block--obsidian {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%2310121a'/><rect x='1' y='2' width='4' height='2' fill='%231d1631'/><rect x='8' y='1' width='3' height='3' fill='%23211b3a'/><rect x='12' y='5' width='3' height='2' fill='%231d1631'/><rect x='3' y='9' width='3' height='2' fill='%23211b3a'/><rect x='7' y='11' width='4' height='3' fill='%231d1631'/><rect x='1' y='13' width='3' height='2' fill='%23211b3a'/><rect x='13' y='12' width='2' height='2' fill='%23211b3a'/></svg>");
+    }
+    .block--tnt {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%23c73535'/><rect y='0' width='16' height='3' fill='%23e24747'/><rect y='13' width='16' height='3' fill='%23b12b2b'/><rect x='0' y='6' width='16' height='4' fill='%23f2f2f2'/><rect x='2' y='7' width='2' height='2' fill='%23333333'/><rect x='5' y='7' width='2' height='2' fill='%23333333'/><rect x='8' y='7' width='2' height='2' fill='%23333333'/><rect x='11' y='7' width='2' height='2' fill='%23333333'/></svg>");
+    }
+
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+    }
+
+    .panel {
+      width: min(980px, 100%);
+      border: 1px solid var(--panel-border);
+      background: linear-gradient(180deg, rgba(0,0,0,0.62), rgba(0,0,0,0.35));
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.65);
+      border-radius: 18px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 22px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      animation: enter 420ms ease-out both;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: radial-gradient(circle at 20% 20%, rgba(82, 255, 115, 0.14) 0%, rgba(82, 255, 115, 0) 55%),
+                  radial-gradient(circle at 80% 70%, rgba(120, 190, 255, 0.12) 0%, rgba(120, 190, 255, 0) 58%);
+      pointer-events: none;
+    }
+
+    @keyframes enter {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .code {
+      font-family: "Press Start 2P", monospace;
+      font-size: clamp(44px, 7vw, 76px);
+      line-height: 1.05;
+      color: var(--green);
+      letter-spacing: 1px;
+      text-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.65),
+        0 0 18px rgba(82, 255, 115, 0.35),
+        0 0 50px rgba(24, 184, 74, 0.24);
+      margin-bottom: 16px;
+    }
+
+    .lead {
+      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
+      font-weight: 900;
+      font-size: clamp(18px, 2.4vw, 26px);
+      color: #e9fff0;
+      margin-bottom: 10px;
+      text-shadow: 0 10px 24px rgba(0,0,0,0.55);
+    }
+
+    .sub {
+      opacity: 0.86;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 16px;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(0, 0, 0, 0.35);
+      color: var(--text);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.42);
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+      user-select: none;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(82, 255, 115, 0.35);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.52), 0 0 26px rgba(82, 255, 115, 0.16);
+      background: rgba(10, 18, 14, 0.55);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      transition-duration: 60ms;
+    }
+
+    .btn.primary {
+      border-color: rgba(82, 255, 115, 0.45);
+      background: linear-gradient(180deg, rgba(20, 66, 34, 0.8), rgba(0, 0, 0, 0.3));
+    }
+
+    .art {
+      display: grid;
+      place-items: center;
+      padding: 10px;
+    }
+
+    .creeper {
+      width: 200px;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 26px 28px rgba(0, 0, 0, 0.55));
+      transform-origin: 50% 90%;
+      animation: creeperBob 1.8s ease-in-out infinite;
+    }
+
+    @keyframes creeperBob {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(6px) rotate(1deg); }
+    }
+
+    .creeper .blink {
+      animation: blink 4.6s steps(1) infinite;
+    }
+    .creeper .normal {
+      animation: unblink 4.6s steps(1) infinite;
+    }
+    @keyframes blink {
+      0%, 88%, 100% { opacity: 0; }
+      89%, 92% { opacity: 1; }
+    }
+    @keyframes unblink {
+      0%, 88%, 100% { opacity: 1; }
+      89%, 92% { opacity: 0; }
+    }
+
+    .spark {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      border-radius: 2px;
+      background: rgba(255, 240, 120, 0.95);
+      box-shadow: 0 0 18px rgba(255, 220, 120, 0.6);
+      transform: translate3d(0, 0, 0);
+      animation: spark 1.2s linear infinite;
+      opacity: 0.9;
+    }
+
+    @keyframes spark {
+      0% { transform: translate3d(-10px, -28px, 0) scale(1); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate3d(24px, -70px, 0) scale(0.2); opacity: 0; }
+    }
+
+    .art-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hint {
+      margin-top: 14px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 760px) {
+      body { overflow-y: auto; }
+      .wrap { padding: 18px 14px; }
+      .panel {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 14px;
+      }
+      .art-wrap { width: 180px; height: 180px; margin: 0 auto; }
+      .creeper { width: 170px; }
+      .sub { margin-bottom: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pixel-dust { animation: none; }
+      .creeper { animation: none; }
+      .block { animation: none; opacity: 0.25; top: 10vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="parallax-layer parallax-back" id="parallaxBack" aria-hidden="true"></div>
+  <div class="parallax-layer parallax-front" id="parallaxFront" aria-hidden="true"></div>
+  <div class="bg-dim" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="pixel-dust" aria-hidden="true"></div>
+  <div class="falling" id="fallingBlocks" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="panel" role="group" aria-label="404">
+      <div class="art">
+        <div class="art-wrap" aria-hidden="true">
+          <div class="spark"></div>
+          <svg class="creeper" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+            <rect width="16" height="16" fill="#2cc24f"/>
+            <rect x="0" y="0" width="16" height="16" fill="#1aa63e" opacity="0.35"/>
+
+            <!-- Normal face -->
+            <g class="normal">
+              <rect x="3" y="4" width="3" height="3" fill="#0b0f0b"/>
+              <rect x="10" y="4" width="3" height="3" fill="#0b0f0b"/>
+              <rect x="6" y="7" width="4" height="2" fill="#0b0f0b"/>
+              <rect x="5" y="9" width="2" height="3" fill="#0b0f0b"/>
+              <rect x="9" y="9" width="2" height="3" fill="#0b0f0b"/>
+            </g>
+
+            <!-- Blink face -->
+            <g class="blink" opacity="0">
+              <rect x="3" y="5" width="3" height="1" fill="#0b0f0b"/>
+              <rect x="10" y="5" width="3" height="1" fill="#0b0f0b"/>
+              <rect x="6" y="7" width="4" height="2" fill="#0b0f0b"/>
+              <rect x="5" y="9" width="2" height="3" fill="#0b0f0b"/>
+              <rect x="9" y="9" width="2" height="3" fill="#0b0f0b"/>
+            </g>
+          </svg>
+        </div>
+        <div class="hint">Похоже, Creeper уже рядом…</div>
+      </div>
+
+      <div class="copy">
+        <h1 class="code">404</h1>
+        <p class="lead">Ты заблудился в шахте!</p>
+        <p class="sub">Эта страница не существует</p>
+
+        <div class="actions">
+          <a class="btn primary" href="./darkrevolt.html">На главную</a>
+          <a class="btn" href="./darkrevolt.html#donate">Донат</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const back = document.getElementById('parallaxBack');
+      const front = document.getElementById('parallaxFront');
+      let mouseX = 0;
+      let mouseY = 0;
+      let raf = 0;
+
+      const onMove = (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        if (!raf) raf = requestAnimationFrame(updateParallax);
+      };
+
+      const updateParallax = () => {
+        raf = 0;
+        const bx = mouseX * 10;
+        const by = mouseY * 8;
+        const fx = mouseX * 18;
+        const fy = mouseY * 14;
+        if (back) back.style.transform = `translate(${bx}px, ${by}px)`;
+        if (front) front.style.transform = `translate(${fx}px, ${fy}px)`;
+      };
+
+      window.addEventListener('mousemove', onMove, { passive: true });
+    })();
+
+    (function () {
+      const root = document.getElementById('fallingBlocks');
+      if (!root) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const TYPES = ['grass', 'dirt', 'stone', 'tnt', 'obsidian'];
+
+      const rand = (min, max) => Math.random() * (max - min) + min;
+      const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+      const build = () => {
+        root.textContent = '';
+        const count = Math.max(22, Math.min(44, Math.floor(window.innerWidth / 34)));
+
+        for (let i = 0; i < count; i++) {
+          const el = document.createElement('div');
+          const type = pick(TYPES);
+          el.className = `block block--${type}`;
+          const size = Math.round(rand(18, 44));
+          const dur = rand(7.0, 16.0).toFixed(2);
+          const delay = (-rand(0, Number(dur))).toFixed(2);
+          const x = rand(-5, 105).toFixed(2);
+          const drift = Math.round(rand(-70, 70));
+          const rot = Math.round(rand(-35, 35));
+
+          el.style.setProperty('--size', `${size}px`);
+          el.style.setProperty('--dur', `${dur}s`);
+          el.style.setProperty('--delay', `${delay}s`);
+          el.style.setProperty('--x', x);
+          el.style.setProperty('--drift', `${drift}px`);
+          el.style.setProperty('--rot', `${rot}deg`);
+
+          root.appendChild(el);
+        }
+      };
+
+      let t = 0;
+      const onResize = () => {
+        window.clearTimeout(t);
+        t = window.setTimeout(build, 140);
+      };
+
+      build();
+      window.addEventListener('resize', onResize, { passive: true });
+    })();
+  </script>
+</body>
+</html>
+
