@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta name="enot" content="aa81d373" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DarkRevolt</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4043,8 +4044,8 @@
 
     <div class="auth-panel" data-auth-panel="login">
       <div>
-        <label class="card-label" for="loginEmailInput">Email</label>
-        <input class="card-input" id="loginEmailInput" type="email" placeholder="you@example.com" autocomplete="email">
+        <label class="card-label" for="loginNickInput">Ник Minecraft</label>
+        <input class="card-input" id="loginNickInput" type="text" placeholder="NickName" autocomplete="username">
       </div>
       <div>
         <label class="card-label" for="loginPasswordInput">Пароль</label>
@@ -4062,12 +4063,12 @@
         <input class="card-input" id="registerNickInput" type="text" placeholder="NickName" autocomplete="nickname">
       </div>
       <div>
-        <label class="card-label" for="registerEmailInput">Email</label>
-        <input class="card-input" id="registerEmailInput" type="email" placeholder="you@example.com" autocomplete="email">
-      </div>
-      <div>
         <label class="card-label" for="registerPasswordInput">Пароль</label>
         <input class="card-input" id="registerPasswordInput" type="password" placeholder="Минимум 6 символов" autocomplete="new-password">
+      </div>
+      <div>
+        <label class="card-label" for="registerPasswordConfirmInput">Повтор пароля</label>
+        <input class="card-input" id="registerPasswordConfirmInput" type="password" placeholder="Повторите пароль" autocomplete="new-password">
       </div>
       <div class="auth-actions">
         <button class="auth-primary-btn" id="registerSubmitBtn" type="button">Создать аккаунт</button>
@@ -4256,13 +4257,13 @@
   const authStatus = document.getElementById('authStatus');
   const authTabButtons = document.querySelectorAll('.auth-tab-btn');
   const authPanels = document.querySelectorAll('.auth-panel');
-  const loginEmailInput = document.getElementById('loginEmailInput');
+  const loginNickInput = document.getElementById('loginNickInput');
   const loginPasswordInput = document.getElementById('loginPasswordInput');
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   const logoutBtn = document.getElementById('logoutBtn');
   const registerNickInput = document.getElementById('registerNickInput');
-  const registerEmailInput = document.getElementById('registerEmailInput');
   const registerPasswordInput = document.getElementById('registerPasswordInput');
+  const registerPasswordConfirmInput = document.getElementById('registerPasswordConfirmInput');
   const registerSubmitBtn = document.getElementById('registerSubmitBtn');
   const registerNavBtn = document.getElementById('registerBtn');
 
@@ -4501,6 +4502,48 @@
     }
     firebaseAuth = firebase.auth();
     firestoreDb = firebase.firestore();
+  };
+
+  const normalizeNick = (value) => String(value || '').trim();
+  const isValidMinecraftNick = (nick) => /^[A-Za-z0-9_]{3,16}$/.test(nick);
+  // Firebase Auth doesn't support "username+password" directly, so we map nick -> synthetic email.
+  const nickToEmail = (nick) => `${normalizeNick(nick).toLowerCase()}@darkrevolt.invalid`;
+
+  const bytesToBase64 = (bytes) => {
+    let bin = '';
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  };
+
+  const hashPasswordPbkdf2 = async (password, saltBytes) => {
+    if (!window.crypto?.subtle) return '';
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      enc.encode(String(password || '')),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+      key,
+      256
+    );
+    return bytesToBase64(new Uint8Array(bits));
+  };
+
+  const buildPasswordHash = async (password) => {
+    try {
+      const salt = new Uint8Array(16);
+      crypto.getRandomValues(salt);
+      const saltB64 = bytesToBase64(salt);
+      const hashB64 = await hashPasswordPbkdf2(password, salt);
+      if (!hashB64) return '';
+      return `pbkdf2_sha256$100000$${saltB64}$${hashB64}`;
+    } catch (_) {
+      return '';
+    }
   };
 
   const loadUserProfile = async (user) => {
@@ -5065,17 +5108,21 @@
       setAuthStatus('Firebase не настроен.', 'error');
       return;
     }
-    const email = (loginEmailInput?.value || '').trim();
+    const nick = normalizeNick(loginNickInput?.value || '');
     const password = (loginPasswordInput?.value || '').trim();
-    if (!email || !password) {
-      setAuthStatus('Введите Email и пароль.', 'error');
+    if (!nick || !password) {
+      setAuthStatus('Введите ник и пароль.', 'error');
+      return;
+    }
+    if (!isValidMinecraftNick(nick)) {
+      setAuthStatus('Ник: 3-16 символов (A-Z, a-z, 0-9, _).', 'error');
       return;
     }
     try {
-      await firebaseAuth.signInWithEmailAndPassword(email, password);
+      await firebaseAuth.signInWithEmailAndPassword(nickToEmail(nick), password);
       setAuthStatus('Успешный вход.', 'success');
     } catch (_) {
-      setAuthStatus('Не удалось войти. Проверьте данные.', 'error');
+      setAuthStatus('Не удалось войти. Проверьте ник и пароль.', 'error');
     }
   });
 
@@ -5094,27 +5141,36 @@
       setAuthStatus('Firebase не настроен.', 'error');
       return;
     }
-    const nick = (registerNickInput?.value || '').trim();
-    const email = (registerEmailInput?.value || '').trim();
+    const nick = normalizeNick(registerNickInput?.value || '');
     const password = (registerPasswordInput?.value || '').trim();
-    if (!nick || !email || !password) {
-      setAuthStatus('Заполните ник, Email и пароль.', 'error');
+    const password2 = (registerPasswordConfirmInput?.value || '').trim();
+    if (!nick || !password || !password2) {
+      setAuthStatus('Заполните ник и пароль (2 раза).', 'error');
+      return;
+    }
+    if (!isValidMinecraftNick(nick)) {
+      setAuthStatus('Ник: 3-16 символов (A-Z, a-z, 0-9, _).', 'error');
+      return;
+    }
+    if (password !== password2) {
+      setAuthStatus('Пароли не совпадают.', 'error');
       return;
     }
     try {
-      const cred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+      const cred = await firebaseAuth.createUserWithEmailAndPassword(nickToEmail(nick), password);
       if (cred.user) {
         await cred.user.updateProfile({ displayName: nick });
         await firestoreDb.collection('users').doc(cred.user.uid).set({
+          nick,
           minecraftNick: nick,
-          email,
+          password: await buildPasswordHash(password),
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
       }
       setAuthStatus('Аккаунт создан. Вы вошли.', 'success');
       setAuthTab('login');
     } catch (_) {
-      setAuthStatus('Не удалось создать аккаунт. Проверьте данные.', 'error');
+      setAuthStatus('Не удалось создать аккаунт. Возможно, ник уже занят.', 'error');
     }
   });
 
