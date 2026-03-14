@@ -1717,6 +1717,30 @@
       margin-bottom: 26px;
     }
 
+    .donate-cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0 18px;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.22);
+    }
+
+    .donate-cta-text {
+      margin: 0;
+      opacity: 0.9;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    @media (max-width: 640px) {
+      .donate-cta { justify-content: center; text-align: center; }
+    }
+
     .donate-subtitle {
       font-size: 24px;
       font-weight: 800;
@@ -2630,6 +2654,20 @@
       box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52), 0 0 28px rgba(82, 255, 115, 0.16);
     }
 
+    /* Anchor version of auth button (e.g. external links). */
+    .dr-auth-link {
+      display: inline-grid;
+      place-items: center;
+      text-decoration: none;
+    }
+
+    .dr-auth-btn--donate {
+      border-color: rgba(165, 107, 255, 0.52);
+      background: linear-gradient(180deg, rgba(74, 33, 140, 0.95), rgba(0, 0, 0, 0.20));
+      color: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52), 0 0 28px rgba(165, 107, 255, 0.16);
+    }
+
     .dr-auth-btn--ghost:hover {
       border-color: rgba(255, 255, 255, 0.70);
       background: rgba(0, 0, 0, 0.26);
@@ -2638,6 +2676,11 @@
     .dr-auth-btn--primary:hover {
       border-color: rgba(82, 255, 115, 0.56);
       background: linear-gradient(180deg, rgba(26, 92, 48, 0.98), rgba(0, 0, 0, 0.18));
+    }
+
+    .dr-auth-btn--donate:hover {
+      border-color: rgba(165, 107, 255, 0.68);
+      background: linear-gradient(180deg, rgba(90, 42, 170, 0.98), rgba(0, 0, 0, 0.18));
     }
 
     .dr-burger {
@@ -2845,6 +2888,13 @@
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
       box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
       user-select: none;
+    }
+
+    /* Anchor version of big CTA button (e.g. external links). */
+    .dr-btn-link {
+      display: inline-grid;
+      place-items: center;
+      text-decoration: none;
     }
 
     .dr-btn:hover {
@@ -3261,6 +3311,7 @@
         <span id="loginBtnText">Войти</span>
       </button>
       <button class="dr-auth-btn dr-auth-btn--primary" id="registerBtn" type="button">Регистрация</button>
+      <a class="dr-auth-btn dr-auth-btn--donate dr-auth-link" id="donateAlertsTopBtn" href="https://www.donationalerts.com/r/darkrevolt" target="_blank" rel="noopener noreferrer">Поддержать</a>
       <button class="menu-toggle dr-burger" id="menuToggle" type="button" aria-label="Открыть меню">☰</button>
     </div>
   </div>
@@ -3296,7 +3347,7 @@
 
           <div class="dr-hero-actions">
             <button class="dr-btn dr-btn--play" id="playBtn" type="button">🎮 Начать играть</button>
-            <button class="dr-btn dr-btn--donate" id="donateBtn" type="button">💎 Донат</button>
+            <button class="dr-btn dr-btn--donate" id="donateBtn" type="button">💎 Поддержать</button>
           </div>
 
           <div class="dr-toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -3480,6 +3531,11 @@
     <section class="page-section" data-page-section="donate">
       <section class="panel">
         <h2 class="page-title">Донат</h2>
+
+        <div class="donate-cta">
+          <p class="donate-cta-text">Поддержи сервер через DonationAlerts</p>
+          <a class="dr-btn dr-btn--donate dr-btn-link" href="https://www.donationalerts.com/r/darkrevolt" target="_blank" rel="noopener noreferrer">Поддержать</a>
+        </div>
 
         <section class="donate-section">
           <h3 class="donate-subtitle">Сетка китов</h3>
@@ -5082,8 +5138,7 @@
   });
 
   donateBtn?.addEventListener('click', () => {
-    showPage('donate');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.open('https://www.donationalerts.com/r/darkrevolt', '_blank', 'noopener,noreferrer');
   });
 
   heroDown?.addEventListener('click', () => {
