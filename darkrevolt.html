@@ -5,6 +5,7 @@
   <meta name="enot" content="aa81d373" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DarkRevolt</title>
+  <link rel="icon" type="image/png" href="./assets/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -1481,6 +1482,20 @@
       font-size: 15px;
     }
 
+    /* Verbatim rules blocks: keep line breaks and spacing, but use site typography */
+    .rules-verbatim {
+      white-space: pre-wrap;
+      line-height: 1.55;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .important-info {
+      margin-top: 20px;
+      border-color: rgba(255, 209, 102, 0.32);
+      background: linear-gradient(165deg, rgba(26, 20, 10, 0.75), rgba(16, 20, 30, 0.88));
+    }
+
     .tag-ban {
       color: #ff6f6f;
       font-weight: 700;
@@ -2502,23 +2517,23 @@
       box-shadow: 0 18px 44px rgba(0, 0, 0, 0.40);
     }
 
-    .dr-topbar-inner {
-      width: 100%;
-      max-width: 1260px;
-      margin: 0 auto;
-      padding: 0 18px;
-      height: 78px;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 16px;
-    }
+	    .dr-topbar-inner {
+	      width: 100%;
+	      max-width: 1260px;
+	      margin: 0 auto;
+	      padding: 0 18px;
+	      min-height: 78px;
+	      display: grid;
+	      grid-template-columns: auto 1fr auto;
+	      align-items: center;
+	      gap: 16px;
+	    }
 
-    @media (max-width: 980px) {
-      .dr-topbar-inner {
-        height: 72px;
-      }
-    }
+	    @media (max-width: 980px) {
+	      .dr-topbar-inner {
+	        min-height: 72px;
+	      }
+	    }
 
     .dr-brand {
       display: inline-flex;
@@ -2527,12 +2542,17 @@
       min-width: 0;
     }
 
-    .dr-brand-logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
-    }
+	    .dr-brand-logo {
+	      width: 69px;
+	      height: 69px;
+	      border-radius: 21px;
+	      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+	      display: block;
+	      border: 1px solid rgba(255, 255, 255, 0.14);
+	      background: rgba(0, 0, 0, 0.26);
+	      object-fit: cover;
+	      object-position: center;
+	    }
 
     /* Show either the logo image or the text fallback, never both. */
     .dr-brand-text { display: none; }
@@ -2621,7 +2641,7 @@
     .dr-auth-btn {
       height: 44px;
       padding: 0 16px;
-      border-radius: 14px;
+      border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
       background: rgba(0, 0, 0, 0.22);
       color: rgba(255, 255, 255, 0.92);
@@ -2631,6 +2651,15 @@
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
       user-select: none;
       white-space: nowrap;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    /* Same size + perfect alignment for "Войти" and "Регистрация" */
+    .dr-auth-btn--ghost,
+    .dr-auth-btn--primary {
+      width: 144px;
+      padding: 0 18px;
     }
 
     .dr-auth-btn:hover {
@@ -2641,15 +2670,19 @@
     }
 
     .dr-auth-btn--ghost {
-      border-color: rgba(255, 255, 255, 0.55);
-      background: rgba(0, 0, 0, 0.16);
+      border-color: rgba(255, 255, 255, 0.34);
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 45%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(0, 0, 0, 0.08));
       color: rgba(255, 255, 255, 0.96);
       box-shadow: 0 18px 44px rgba(0, 0, 0, 0.40);
     }
 
     .dr-auth-btn--primary {
       border-color: rgba(82, 255, 115, 0.40);
-      background: linear-gradient(180deg, rgba(20, 66, 34, 0.95), rgba(0, 0, 0, 0.20));
+      background:
+        radial-gradient(circle at 18% 20%, rgba(82, 255, 115, 0.35), rgba(82, 255, 115, 0) 52%),
+        linear-gradient(180deg, rgba(40, 160, 85, 0.92), rgba(10, 20, 14, 0.35));
       color: rgba(255, 255, 255, 0.98);
       box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52), 0 0 28px rgba(82, 255, 115, 0.16);
     }
@@ -2663,24 +2696,32 @@
 
     .dr-auth-btn--donate {
       border-color: rgba(165, 107, 255, 0.52);
-      background: linear-gradient(180deg, rgba(74, 33, 140, 0.95), rgba(0, 0, 0, 0.20));
+      background:
+        radial-gradient(circle at 18% 20%, rgba(165, 107, 255, 0.40), rgba(165, 107, 255, 0) 52%),
+        linear-gradient(180deg, rgba(141, 100, 255, 0.92), rgba(18, 12, 30, 0.35));
       color: rgba(255, 255, 255, 0.98);
       box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52), 0 0 28px rgba(165, 107, 255, 0.16);
     }
 
     .dr-auth-btn--ghost:hover {
-      border-color: rgba(255, 255, 255, 0.70);
-      background: rgba(0, 0, 0, 0.26);
+      border-color: rgba(255, 255, 255, 0.50);
+      background:
+        radial-gradient(circle at 35% 18%, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0) 50%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.10));
     }
 
     .dr-auth-btn--primary:hover {
       border-color: rgba(82, 255, 115, 0.56);
-      background: linear-gradient(180deg, rgba(26, 92, 48, 0.98), rgba(0, 0, 0, 0.18));
+      background:
+        radial-gradient(circle at 22% 18%, rgba(82, 255, 115, 0.44), rgba(82, 255, 115, 0) 52%),
+        linear-gradient(180deg, rgba(55, 200, 110, 0.96), rgba(10, 20, 14, 0.32));
     }
 
     .dr-auth-btn--donate:hover {
       border-color: rgba(165, 107, 255, 0.68);
-      background: linear-gradient(180deg, rgba(90, 42, 170, 0.98), rgba(0, 0, 0, 0.18));
+      background:
+        radial-gradient(circle at 22% 18%, rgba(165, 107, 255, 0.52), rgba(165, 107, 255, 0) 52%),
+        linear-gradient(180deg, rgba(164, 130, 255, 0.96), rgba(18, 12, 30, 0.32));
     }
 
     .dr-burger {
@@ -2700,18 +2741,23 @@
       .dr-burger { display: inline-grid; place-items: center; }
     }
 
-    @media (max-width: 560px) {
-      .dr-auth { gap: 8px; }
-      .dr-profile-btn { display: none; }
+	    @media (max-width: 560px) {
+	      .dr-auth { gap: 8px; }
+	      .dr-profile-btn { display: none; }
       .dr-auth-btn {
         height: 40px;
         padding: 0 12px;
         border-radius: 13px;
         font-size: 13px;
       }
-      .dr-burger { width: 40px; height: 40px; border-radius: 13px; }
-      .dr-brand-logo { width: 42px; height: 42px; border-radius: 13px; }
-    }
+      .dr-auth-btn--ghost,
+      .dr-auth-btn--primary {
+        width: auto;
+      }
+	      .dr-burger { width: 40px; height: 40px; border-radius: 13px; }
+	      .dr-brand-logo { width: 63px; height: 63px; border-radius: 20px; }
+	      .dr-hero-title-frame { height: 132px; border-radius: 18px; }
+	    }
 
     .dr-mobile-drawer {
       display: none;
@@ -2825,7 +2871,32 @@
       text-transform: uppercase;
       color: rgba(255, 255, 255, 0.96);
       text-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+      margin: 0;
+      display: grid;
+      place-items: center;
     }
+
+		    .dr-hero-title-frame {
+		      position: relative;
+		      width: min(92vw, 900px);
+		      /* Crop top/bottom whitespace by forcing a shorter frame. */
+		      height: clamp(120px, 16vw, 190px);
+		      overflow: hidden;
+		      margin: 0 auto;
+		      border-radius: 22px;
+		      display: flex;
+		      align-items: center; /* vertical centering so crop is top/bottom, not left/right */
+		      justify-content: center;
+		    }
+
+		    .dr-hero-title-logo {
+		      width: 100%;
+		      height: auto;
+		      max-width: 100%;
+		      filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.55));
+		      user-select: none;
+		      display: block;
+		    }
 
     .dr-hero-tagline {
       font-size: clamp(14px, 2.2vw, 18px);
@@ -2878,7 +2949,7 @@
     .dr-btn {
       min-height: 52px;
       padding: 0 18px;
-      border-radius: 16px;
+      border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
       background: rgba(0, 0, 0, 0.28);
       color: rgba(255, 255, 255, 0.94);
@@ -2888,6 +2959,8 @@
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
       box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
       user-select: none;
+      position: relative;
+      overflow: hidden;
     }
 
     /* Anchor version of big CTA button (e.g. external links). */
@@ -2908,13 +2981,17 @@
       min-height: 56px;
       padding: 0 22px;
       border-color: rgba(82, 255, 115, 0.40);
-      background: linear-gradient(180deg, rgba(20, 66, 34, 0.95), rgba(0, 0, 0, 0.20));
+      background:
+        radial-gradient(circle at 18% 20%, rgba(82, 255, 115, 0.32), rgba(82, 255, 115, 0) 52%),
+        linear-gradient(180deg, rgba(40, 160, 85, 0.92), rgba(10, 20, 14, 0.35));
       box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55), 0 0 34px rgba(82, 255, 115, 0.15);
     }
 
     .dr-btn--donate {
       border-color: rgba(165, 107, 255, 0.45);
-      background: linear-gradient(180deg, rgba(74, 33, 140, 0.95), rgba(0, 0, 0, 0.20));
+      background:
+        radial-gradient(circle at 18% 20%, rgba(165, 107, 255, 0.34), rgba(165, 107, 255, 0) 52%),
+        linear-gradient(180deg, rgba(141, 100, 255, 0.92), rgba(18, 12, 30, 0.35));
       box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55), 0 0 34px rgba(165, 107, 255, 0.16);
     }
 
@@ -3219,21 +3296,26 @@
       align-items: center;
     }
 
-    .dr-footer-logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-    }
+	    .dr-footer-logo {
+	      width: 66px;
+	      height: 66px;
+	      border-radius: 21px;
+	      display: block;
+	      border: 1px solid rgba(255, 255, 255, 0.12);
+	      background: rgba(0, 0, 0, 0.22);
+	      object-fit: cover;
+	      object-position: center;
+	    }
 
-    .dr-footer-name {
-      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
-      font-weight: 900;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.92);
-    }
+	    .dr-footer-name {
+	      font-family: "Orbitron", system-ui, -apple-system, Segoe UI, sans-serif;
+	      font-weight: 900;
+	      letter-spacing: 1px;
+	      text-transform: uppercase;
+	      color: rgba(255, 255, 255, 0.92);
+	    }
 
-    .dr-footer-copy { color: rgba(255, 255, 255, 0.62); font-size: 12px; }
+	    .dr-footer-copy { color: rgba(255, 255, 255, 0.62); font-size: 12px; }
 
     .dr-footer-links {
       display: inline-flex;
@@ -3288,11 +3370,11 @@
 <div class="pixel-dust"></div>
 <div class="noise"></div>
 
-<header class="dr-topbar" id="drTopbar">
-  <div class="dr-topbar-inner">
-    <a class="dr-brand" href="./darkrevolt.html" aria-label="DarkRevolt">
-      <img class="dr-brand-logo" src="./assets/logo.png" alt="DarkRevolt">
-    </a>
+	<header class="dr-topbar" id="drTopbar">
+	  <div class="dr-topbar-inner">
+	    <a class="dr-brand" href="./darkrevolt.html" aria-label="DarkRevolt">
+	      <img class="dr-brand-logo" src="./assets/logo.jpg" alt="DarkRevolt">
+	    </a>
 
     <nav class="dr-menu" aria-label="Разделы">
       <button class="menu-item active" type="button" data-page="home">Главная</button>
@@ -3336,7 +3418,11 @@
         <div class="dr-hero-glow" aria-hidden="true"></div>
 
         <div class="dr-hero-inner" data-reveal>
-          <h1 class="dr-hero-title">DARKREVOLT</h1>
+	          <h1 class="dr-hero-title">
+	            <div class="dr-hero-title-frame" aria-label="DarkRevolt">
+	              <img class="dr-hero-title-logo" src="./assets/DR.png" alt="DR">
+	            </div>
+	          </h1>
           <p class="dr-hero-tagline">Лучший Minecraft сервер СНГ</p>
 
           <div class="dr-ip" role="group" aria-label="IP сервера">
@@ -3433,15 +3519,15 @@
         </div>
       </section>
 
-      <footer class="dr-footer" aria-label="Подвал" data-reveal>
-        <div class="dr-footer-inner">
-          <div class="dr-footer-brand">
-            <img class="dr-footer-logo" src="./assets/logo.png" alt="DarkRevolt">
-            <div>
-              <div class="dr-footer-name">DARKREVOLT</div>
-              <div class="dr-footer-copy">Copyright DarkRevolt 2026</div>
-            </div>
-          </div>
+	      <footer class="dr-footer" aria-label="Подвал" data-reveal>
+	        <div class="dr-footer-inner">
+	          <div class="dr-footer-brand">
+	            <img class="dr-footer-logo" src="./assets/logo.jpg" alt="DarkRevolt">
+	            <div>
+	              <div class="dr-footer-name">DARKREVOLT</div>
+	              <div class="dr-footer-copy">Copyright DarkRevolt 2026</div>
+	            </div>
+	          </div>
           <nav class="dr-footer-links" aria-label="Ссылки">
             <a class="dr-footer-link" href="#" rel="noopener noreferrer">Discord</a>
             <a class="dr-footer-link" href="#" rel="noopener noreferrer">Telegram</a>
@@ -3924,67 +4010,315 @@
           <article class="rule-card">
             <div class="rule-head">
               <span class="rule-icon">📜</span>
-              <h3 class="rule-title">1. Общие правила</h3>
+              <h3 class="rule-title">Основные правила сервера</h3>
             </div>
-            <ul class="rule-list">
-              <li><span class="tag-ban">Запрещены</span> читы и моды, дающие преимущество (X-Ray, AutoClick).</li>
-              <li>Уважайте других игроков, никакого токсичного поведения.</li>
-              <li>Реклама других серверов = бан.</li>
-              <li>3 предупреждения = мут на 24 часа.</li>
-            </ul>
+            <div class="rules-verbatim" data-rules-block="base">
+1.1
+Использование любых функций проекта подразумевает полное согласие с настоящими правилами. Владелец аккаунта несет полную ответственность за безопасность своего аккаунта и за все действия, осуществляемые с его помощью.
+
+1.2
+Администратор имеет право применить меры наказания к игроку по причинам, не предусмотренным в правилах сервера.
+
+1.3
+Неведение о правилах не освобождает нарушителя от ответственности и может привести к увеличению срока наказания.
+
+1.4
+Игроки обязаны строго придерживаться всех установленных правил. В случае их нарушения, игрок будет подвергнут соответствующему наказанию.
+
+1.5
+Запрещено распространять информацию о сторонних серверах, сайтах и YouTube-каналах, не имеющих отношения к нашему серверу. Разрешается рекламировать стримы, проводимые на нашем сервере, с интервалом в 5 минут.
+
+1.6
+Администрация оставляет за собой право вносить изменения в настоящий свод правил без предварительного уведомления игроков.
+
+1.7
+Администрация оставляет за собой право применять меры наказания к игрокам, которые систематически нарушают правила. Конкретные меры будут определяться на усмотрение администрации.
+
+1.8
+На обжалование наказания предоставляется 3 дня с момента его выдачи.
+
+1.9
+Игровой никнейм не должен содержать следующие элементы: [Бан навсегда]
+— ненормативную лексику;
+— оскорбления;
+— упоминания читов;
+— названия сторонних проектов;
+— схожесть с никами команды проекта.
+
+1.10
+Средства, потраченные на услуги, считаются пожертвованиями и не подлежат возврату. Администрация не несет ответственности за ошибки, возникшие при оплате.
+
+1.11
+Список запрещённых модификаций и клиентов на нашем сервере:
+— Better PVP (все версии).
+— Wall-Jump.
+— SeedCracker и другие моды, выполняющие аналогичные функции.
+— FreeCam.
+— Tweakeroo.
+— Elytra Utilities.
+— BetterClicker.
+— Чит-модификации и чит-клиенты (все виды).
+— Auto Clicker.
+— Inventory Profiles Next.
+— Chest Locator и аналогичные моды.
+— Baritone.
+— ForgeHax.
+— Replay Mod.
+— FindMe.
+— X-ray модификации (все виды).
+— Squake.
+— Step.
+— AutoSwitch.
+— Использование ботов (все виды).
+— Takker.
+— World Downloader.
+— Отображение пещер, радар игроков, предметов, блоков и сущностей.
+— Bedrock Miner.
+— ClientCommands.
+
+1.12
+Запрещено играть или помогать другим игрокам, если ваша команда/группа по численности больше разрешенного числа участников для режима сервера.
+игровой процесс
+</div>
+          </article>
+
+          <article class="rule-card">
+            <div class="rule-head">
+              <span class="rule-icon">🎮</span>
+              <h3 class="rule-title">Игровой процесс</h3>
+            </div>
+            <div class="rules-verbatim" data-rules-block="gameplay">
+2.1
+Передача или продажа аккаунта строго запрещены.
+
+Наказание: Перманентная блокировка аккаунта.
+
+2.2
+Создание механизмов, наносящих ущерб серверу.
+
+Наказание: Блокировка аккаунта до 7 дней.
+
+2.3
+Эксплуатация уязвимостей Java-движка с целью получения выгоды.
+
+Наказание: Блокировка аккаунта до 5 дней.
+
+2.4
+Взлом аккаунтов и их несанкционированная привязка.
+
+Наказание: Перманентная блокировка аккаунта по IP-Адресу.
+
+2.5
+Распространение запрещённого программного обеспечения.
+
+Наказание: Перманентная блокировка аккаунта.
+
+2.6
+Использование и хранение запрещённого программного обеспечения (читов).
+
+Наказание: Блокировка аккаунта от 5 до 30 дней, очистка инвентаря + снос всех баз (в зависимости от чита)
+
+2.6.1
+Использование устройств, дающих преимущества перед другими игроками (например, клавиатуру и мышь на мобильных анархиях)
+
+Наказание: Блокировка аккаунта до 30 дней
+
+2.7
+Торговля с использованием реальных денежных средств.
+
+Наказание: Блокировка аккаунта от 15 до 30 дней.
+
+2.8
+Использование уязвимостей для обхода наказаний.
+
+Наказание: Блокировка аккаунта от 20 до 30 дней.
+
+2.9
+Побуждать игроков к нарушению установленных правил.
+
+Наказание: Блокировка аккаунта на 3 дня.
+
+2.10
+Любые действия, препятствующие эффективной работе модерации или администрации.
+
+Наказание: Блокировка аккаунта на 1 день.
+
+2.11
+Умышленное препятствование ютуберам в создании контента.
+
+Наказание: Тип и срок наказания определяются администрацией.
+
+2.12
+Заведомо вводить в заблуждение администрацию и модераторов.
+
+Наказание: Тип и срок наказания определяются администрацией.
+
+2.13
+Ники и кланы, содержащие нецензурную лексику, оскорбления в адрес пользователей или игрового проекта, а также способствующие расовой, религиозной, половой, национальной или политической дискриминации.
+
+Наказание: Перманентная блокировка аккаунта.
+
+2.14
+Выдача себя за представителя администрации.
+
+Наказание: Блокировка аккаунта на 1 день.
+
+2.15
+Распространение личных данных игроков без их согласия строго запрещено. К таким данным относятся ФИО, адрес, номер телефона, фотографии и другие подобные сведения. Запрещены любые действия, связанные с доксингом, сватингом и угрозами публикации личной информации.
+
+Наказание: Перманентная блокировка аккаунта.
+
+2.16
+Использовать, распространять или умалчивать об игровых ошибках от администрации, вне зависимости от предполагаемой выгоды.
+
+Наказание: Блокировка аккаунта от 1 до 14 дней.
+
+2.17
+Избегание игровых наказаний запрещено, создавая второй аккаунт, если на основном аккаунте наложена блокировка. Также запрщено общаться в чате через одного из твинков, если на другом аккаунте установлена блокировка игрового чата.
+
+Наказание: Перманентная блокировка аккаунта.
+
+2.18
+Преследование (Таргетинг) игроков
+
+Наказание: Блокировка аккаунта от 1 до 14 дней.
+
+2.19
+Накрутка статистики (убийств, смертей, и т.д.)
+
+Наказание: Блокировка аккаунта от 1 до 7 дней + обнуление накрученной статистики
+</div>
           </article>
 
           <article class="rule-card">
             <div class="rule-head">
               <span class="rule-icon">💬</span>
-              <h3 class="rule-title">2. Правила чата</h3>
+              <h3 class="rule-title">Правила поведения в чате</h3>
             </div>
-            <ul class="rule-list">
-              <li>Не писать капсом (ЗА ИСКЛЮЧЕНИЕМ ЭМОЦИЙ).</li>
-              <li><span class="tag-ban">Запрещено</span> спамить и флудить.</li>
-              <li><span class="tag-ban">Запрещен</span> доксинг (раскрытие личной информации).</li>
-              <li>Администратор всегда прав.</li>
-            </ul>
+            <div class="rules-verbatim" data-rules-block="chat">
+Правила поведения в чате
+3.1
+Запрос ресурсов и привилегий у администрации и игроков, обладающих особыми привилегиями.
+
+Наказание: Блокировка игрового чата на 10 минут.
+
+3.2
+Использование заглавных букв: более 50% текста написано в верхнем регистре.
+
+Наказание: Блокировка игрового чата на 5 минут.
+
+3.3
+Флуд: повторение текста и символов (три раза подряд).
+
+Наказание: Блокировка игрового чата на 5 минут.
+
+3.4
+Обсуждение действий модерации и администрации в чате.
+
+Наказание: Блокировка игрового чата на 30 минут.
+
+3.5
+Угрозы в адрес аккаунта в виде банов или даже расправы в реальной жизни.
+
+Наказание: Блокировка игрового чата на 15 минут.
+
+3.6
+Оскорбление проекта, администрации и модерации.
+
+Наказание: Блокировка игрового чата на 120 минут.
+
+3.7
+Оскорбления, унижения чести и достоинства, а также дискриминация на осное расы, религии, пола, национальности или политических взглядов.
+
+Наказание: Блокировка игрового чата от 30 до 120 минут.
+
+3.8
+Оскорбление близких, включая завуалированные выражения и мемы.
+
+Наказание: Блокировка игрового чата от 60 до 120 минут.
+
+3.9
+Умышленно вводить игроков в заблуждение, предоставляя заранее ложную информацию.
+
+Наказание: Блокировка игрового чата на 30 минут.
+</div>
           </article>
 
           <article class="rule-card">
             <div class="rule-head">
-              <span class="rule-icon">⚔️</span>
-              <h3 class="rule-title">3. PvP правила</h3>
+              <span class="rule-icon">🧩</span>
+              <h3 class="rule-title">Дополнительные правила</h3>
             </div>
-            <ul class="rule-list">
-              <li>На спавне PvP выключено.</li>
-              <li><span class="tag-ban">Запрещен</span> кемп (убийство на спавне снова и снова).</li>
-              <li><span class="tag-allow">Разрешено</span> гриферство только в режиме Anarchy.</li>
-            </ul>
-          </article>
+            <div class="rules-verbatim" data-rules-block="extra">
+Дополнительные правила
+4.1
+Запрещается создание построек, содержащих изображения половых органов, символику межнациональной розни, оскорбительные или нецензурные выражения.
 
-          <article class="rule-card">
-            <div class="rule-head">
-              <span class="rule-icon">⛔</span>
-              <h3 class="rule-title">4. Баны и наказания</h3>
-            </div>
-            <ul class="rule-list">
-              <li>Первое нарушение: предупреждение.</li>
-              <li>Второе: мут/варн.</li>
-              <li>Третье: бан на 7 дней.</li>
-              <li><span class="tag-ban">Читы: перманентный бан без предупреждений.</span></li>
-            </ul>
-          </article>
+Наказание: Блокировка аккаунта на 1 день.
 
-          <article class="rule-card">
-            <div class="rule-head">
-              <span class="rule-icon">👑</span>
-              <h3 class="rule-title">5. Как стать модератором</h3>
-            </div>
-            <ul class="rule-list">
-              <li>Наиграть 100+ часов.</li>
-              <li><span class="tag-allow">Без нарушений</span> за последние 30 дней.</li>
-              <li>Подать заявку в Discord.</li>
-              <li>Возраст 14+.</li>
-            </ul>
+4.2
+Запрещается блокировка свободного доступа к чужим постройкам.
+
+Наказание: Блокировка аккаунта на 1 день.
+
+4.3
+Любая попытка навредить серверу будет строго наказываться.
+
+Наказание: Перманентная блокировка аккаунта.
+
+4.4
+Попытки получить пароль от учетной записи другого игрока недопустимы.
+
+Наказание: Перманентная блокировка аккаунта.
+
+4.5
+Дискриминация игроков по любым признакам строго запрещена.
+
+Наказание: Блокировка аккаунта на срок от 5 до 30 дней.
+
+4.6
+Создание помех другим игрокам в процессе игры недопустимо.
+
+Наказание: Блокировка аккаунта на 1 день.
+
+4.7
+Поведение, содержащее элементы явной порнографии или ЛГБТ-пропаганды, недопустимо.
+
+Наказание: Блокировка аккаунта на 1 день.
+
+4.8
+Использование багов в игре (багоюз) строго запрещено.
+
+Наказание: Блокировка аккаунта на срок до 5 дней (при наличии привилегий — их снятие).
+
+4.9
+Многократные нарушения правил (3 и более) будут рассматриваться отдельно.
+
+Наказание: Срок наказания определяется администрацией.
+
+4.10
+Умышленное неоказание помощи администрации в решении игровых вопросов недопустимо.
+
+Наказание: Блокировка аккаунта на 1 день.
+</div>
           </article>
         </div>
+
+        <article class="rule-card important-info">
+          <div class="rule-head">
+            <span class="rule-icon">⚠️</span>
+            <h3 class="rule-title">Важная информация</h3>
+          </div>
+          <div class="rules-verbatim" data-rules-block="important">
+Важная информация
+Незнание правил не освобождает от ответственности. Администрация оставляет за собой право изменять правила без предварительного уведомления.
+
+Если у вас есть вопросы по правилам или вы хотите обжаловать наказание, пожалуйста, свяжитесь с нашей технической поддержкой.
+
+
+
+</div>
+        </article>
       </section>
     </section>
   </main>
